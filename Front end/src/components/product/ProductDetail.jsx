@@ -1,15 +1,14 @@
-// ProductDetail.jsx
 import React from 'react';
 
-const ProductDetail = ({ product }) => {
-    return (
-        <div>
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
-            <p>Price: ${product.price}</p>
-            <button>Add to Cart</button>
-        </div>
-    );
+const SingleProduct = ({ product }) => {
+  return (
+    <div className="single-product">
+      <h2>{product.name}</h2>
+      <p>Description: {product.description}</p>
+      <p>Price: ${product.price}</p>
+      <button>Add to Cart</button>
+    </div>
+  );
 };
 
-export default ProductDetail;
+export default SingleProduct;
