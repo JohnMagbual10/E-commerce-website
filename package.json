@@ -1,0 +1,24 @@
+
+{
+  "name": "fullstack-backend",
+  "version": "1.0.0",
+  "description": "Backend for Fullstack eCommerce Application",
+  "main": "index.js",
+  "scripts": {
+  "start": "node index.js",
+  "test": "your-test-command",
+  "lint": "your-lint-command",
+  "build": "your-build-command"
+  },
+  "dependencies": {
+  "bcrypt": "5.1.1",
+  "express": "4.19.2",
+  "jsonwebtoken": "9.0.2",
+  "pg": "8.11.5"
+  },
+  "devDependencies": {
+  "your-test-framework": "version",
+  "your-linter": "version",
+  "your-build-tool": "version"
+  }
+  }
