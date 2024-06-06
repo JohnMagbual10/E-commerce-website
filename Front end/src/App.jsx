@@ -5,7 +5,7 @@ import SingleBook from './components/SingleBook';
 import Navigation from './components/Navigation';
 import Login from './components/Login';
 import Register from './components/Register';
-import Account from './components/Account';
+import Account from './components/user authentication/Account';
 import Home from './components/Home';
 import './index.css';
 
