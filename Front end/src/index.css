@@ -1,0 +1,309 @@
+/* App.css */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Hide overflow to prevent scrollbars */
+}
+
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Place the video behind other content */
+  opacity: 0.70; /* Adjust the opacity value as needed (0 to 1) */
+}
+
+.video-content {
+  position: relative;
+  z-index: 1; /* Ensure content appears above the video */
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Navigation CSS */
+
+.navigation {
+  border-radius: 6px;
+  background-image: linear-gradient(
+    rgb(48, 48, 48) 13%,
+    rgb(30, 30, 30) 40%,
+    #2a0484 86%
+  );
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 -2px 0 black;
+  cursor: pointer;
+  box-shadow: 1px 2px 4px rgb(20, 20, 20), 0 4px 12px rgb(10, 10, 10);
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+}
+
+.navigation-list {
+  display: flex; /* Display navigation items horizontally */
+  list-style: none; /* Remove default list styles */
+  margin: 0; /* Remove default margin */
+  padding: 10px; /* Remove default padding */
+}
+
+.navigation-item {
+  margin-right: 10px; /* Add margin between navigation items */
+}
+
+.navigation-item:last-child {
+  margin-right: 0; /* Remove margin from the last navigation item */
+}
+
+.navigation-link {
+  color: #5f00f8;
+  text-decoration: none; /* Remove default underline */
+}
+
+
+/*Book List CSS*/
+
+.book-list-container {background-color: #dfd9d2;
+  display: block;
+  color: rgb(23, 22, 22);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  max-height: 80vh; /* Set a maximum height for the container */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds the container height */
+  opacity: .90;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    perspective: 1000px;
+}
+
+.book img {
+max-width: 100%;
+  height: auto;
+}
+.book-list{
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+}
+.book {
+  border: 2px solid #0a0a0a;
+  padding: 10px;
+  border-spacing: 1cap;
+}
+
+.book h3 {border: 1px solid #b07c03;;
+  display: center;
+  margin-top: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: rotateY(-10deg) rotateX(10deg);
+    perspective: 1000px;
+}
+
+
+
+/* Login CSS*/
+
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: rotateY(-10deg) rotateX(10deg);
+    perspective: 1000px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-input {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.login-error {
+  color: #dc3545;
+  margin-top: 10px;
+}
+
+/* index.css or any other CSS file */
+
+.account-container {display: center;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ebece5;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.account-title { border:1px solid #d18f0c;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #5a07ea;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: rotateY(-10deg) rotateX(10deg);
+    perspective: 1000px;
+}
+
+.account-info {
+  margin-bottom: 20px;
+}
+
+.account-info p {
+  margin-bottom: 10px;
+}
+
+.account-button {
+  padding: 10px 20px;
+  background-color: #7700ff;
+  color: #171616;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.account-button:hover {
+  background-color: #0056b3;
+}
+
+/* Register.css */
+
+.register-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.register-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: rotateY(-10deg) rotateX(10deg);
+    perspective: 1000px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.register-button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer
+}
+
+/* SingleBook.css */
+
+.single-book-container {border: 3px solid #090808; /* Add border */
+  border-radius: 8px; /* Add border radius for rounded corners */
+  background-color: #ccc;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  opacity: .80;
+}
+
+.single-book-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(112, 33, 249, 0.5);
+    transform: rotateY(-10deg) rotateX(10deg);
+    perspective: 1000px;
+}
+
+.single-book-info {
+  margin-bottom: 20px;
+}
+
+.single-book-description {
+  margin-bottom: 20px;
+}
+
+.single-book-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.single-book-link {
+  display: block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.single-book-link:hover {
+  text-decoration: underline;
+}
+
+/* Home */
+.home-container {background-color: #ccc;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: rotateY(-10deg) rotateX(10deg);
+    perspective: 1000px;
+    border: 3px solid #090808; /* Add border */
+  border-radius: 8px; /* Add border radius for rounded corners */
+}
+
+.home-container h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.home-container p {
+  font-size: 18px;
+  color: #5f00f8;
+}
+
+
