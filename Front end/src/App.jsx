@@ -1,24 +1,19 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import BookList from './components/Booklist';
-import SingleBook from './components/SingleBook';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-dom/client';
 import Navigation from './components/Navigation';
 import Login from './components/UserAuthentication/Login';
 import Register from './components/UserAuthentication/Registration';
 import ForgotPassword from './components/UserAuthentication/ForgotPassword';
 import Profile from './components/UserAuthentication/Profile';
 import ProductList from './components/Products/ProductList';
-import ProductDetail from './components/Products/ProductDetail';
-import ProductCard from './components/Products/ProductCard';
+import ProductDetails from './components/Products/ProductDetails';
 import OrderHistory from './components/Orders/OrderHistory';
 import OrderDetail from './components/Orders/OrderDetail';
 import Checkout from './components/Orders/Checkout';
 import ProductReviewForm from './components/Reviews/ProductReviewForm';
 import ReviewList from './components/Reviews/ReviewList';
-import Cart from './components/cart/Cart.jsx';
-import CartItem from './components/Cart/CartItem';
 import Wishlist from './components/Wishlist/Wishlist';
-import WishlistItem from './components/Wishlist/WishlistItem';
+import Cart from './components/Cart/CartItem';
 import PaymentForm from './components/Payments/PaymentForm';
 import PaymentHistory from './components/Payments/PaymentHistory';
 import AdminDashboard from './components/Admin/AdminDashboard';
@@ -27,10 +22,7 @@ import ManageCategories from './components/Admin/ManageCategories';
 import ManageUsers from './components/Admin/ManageUsers';
 import ManageOrders from './components/Admin/ManageOrders';
 import ManageCoupons from './components/Admin/ManageCoupons';
-import Header from './components/common/Header.jsx';
 import Footer from './components/Common/Footer';
-import Navbar from './components/Common/Navbar';
-import Sidebar from './components/Common/Sidebar';
 import Button from './components/UI/Button';
 import Input from './components/UI/Input';
 import Form from './components/UI/Form';
@@ -58,11 +50,10 @@ function App() {
 
           {/* Products */}
           <Route path="/products" element={<ProductList />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/product-card" element={<ProductCard />} />
-
+          <Route path="/products/:id" element={<ProductDetails />} />
+          
           {/* Orders */}
-          <Route path="/orders" element={<OrderHistory />} />
+          <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
           <Route path="/checkout" element={<Checkout />} />
 
@@ -72,11 +63,9 @@ function App() {
 
           {/* Cart */}
           <Route path="/cart" element={<Cart />} />
-          <Route path="/cart-item" element={<CartItem />} />
 
           {/* Wishlist */}
           <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/wishlist-item" element={<WishlistItem />} />
 
           {/* Payments */}
           <Route path="/payment-form" element={<PaymentForm />} />
