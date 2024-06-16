@@ -1,9 +1,7 @@
-// BookList.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const BookList = () => {
+const BookList = ({ addToCart }) => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -26,6 +24,7 @@ const BookList = () => {
 
     fetchBooks();
   }, []);
+  
 
   return (
     <div className="book-list-container">
@@ -40,6 +39,13 @@ const BookList = () => {
             <p>Description: {book.description}</p>
             <img src={book.coverimage} alt={book.title} />
             <p>Available: {book.available ? 'Yes' : 'No'}</p>
+            <button 
+              onClick={() => addToCart(book)} 
+              className="add-to-cart-button"
+              disabled={!book.available}
+            >
+              Add to Cart
+            </button>
           </li>
         ))}
       </ul>

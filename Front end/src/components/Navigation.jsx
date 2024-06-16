@@ -23,6 +23,9 @@ const Navigation = () => {
         <li className="navigation-item">
           <Link to="/account" className="navigation-link">Account</Link>
         </li>
+        <li className="navigation-item">
+          <Link to="/Cart" className="navigation-link">Cart</Link>
+        </li>
       </ul>
     </nav>
   );

@@ -1,5 +1,6 @@
 /* App.css */
 
+/* Global Styles */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -7,19 +8,21 @@ body {
   overflow: hidden; /* Hide overflow to prevent scrollbars */
 }
 
+/* Background Video Styles */
 .video-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1; /* Place the video behind other content */
-  opacity: 0.70; /* Adjust the opacity value as needed (0 to 1) */
+  z-index: -1;
+  object-fit: cover; /* Ensure video covers the entire background */
 }
 
+/* Video Content Styles */
 .video-content {
   position: relative;
-  z-index: 1; /* Ensure content appears above the video */
+  z-index: 1;
 }
 
 .container {
@@ -28,8 +31,7 @@ body {
   padding: 20px;
 }
 
-/* Navigation CSS */
-
+/* Navigation Styles */
 .navigation {
   border-radius: 6px;
   background-image: linear-gradient(
@@ -66,10 +68,9 @@ body {
   text-decoration: none; /* Remove default underline */
 }
 
-
-/*Book List CSS*/
-
-.book-list-container {background-color: #dfd9d2;
+/* Book List Styles */
+.book-list-container {
+  background-color: #dfd9d2;
   display: block;
   color: rgb(23, 22, 22);
   text-align: center;
@@ -77,37 +78,58 @@ body {
   text-decoration: none;
   max-height: 80vh; /* Set a maximum height for the container */
   overflow-y: auto; /* Enable vertical scrolling when content exceeds the container height */
-  opacity: .90;
+  opacity: 0.90;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    perspective: 1000px;
+  perspective: 1000px;
 }
 
 .book img {
-max-width: 100%;
+  max-width: 50%; /* Reduce image size */
   height: auto;
 }
-.book-list{
+
+.book-list {
   display: grid;
-  grid-template-columns: auto auto auto auto auto;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 10px; /* Add gap between items */
 }
+
 .book {
   border: 2px solid #0a0a0a;
   padding: 10px;
   border-spacing: 1cap;
 }
 
-.book h3 {border: 1px solid #b07c03;;
-  display: center;
+.book h3 {
+  border: 1px solid #b07c03;
   margin-top: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    transform: rotateY(-10deg) rotateX(10deg);
-    perspective: 1000px;
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .book-list {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .book-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .book-list {
+    grid-template-columns: 1fr; /* 1 column on very small screens */
+  }
 }
 
 
 
-/* Login CSS*/
-
+/* Login Styles */
 .login-container {
   max-width: 400px;
   margin: 0 auto;
@@ -121,8 +143,8 @@ max-width: 100%;
   text-align: center;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    transform: rotateY(-10deg) rotateX(10deg);
-    perspective: 1000px;
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
 }
 
 .login-form {
@@ -156,9 +178,9 @@ max-width: 100%;
   margin-top: 10px;
 }
 
-/* index.css or any other CSS file */
-
-.account-container {display: center;
+/* Account Info Styles */
+.account-container {
+  display: center;
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
@@ -167,13 +189,14 @@ max-width: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.account-title { border:1px solid #d18f0c;
+.account-title {
+  border: 1px solid #d18f0c;
   text-align: center;
   margin-bottom: 20px;
   color: #5a07ea;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    transform: rotateY(-10deg) rotateX(10deg);
-    perspective: 1000px;
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
 }
 
 .account-info {
@@ -198,8 +221,7 @@ max-width: 100%;
   background-color: #0056b3;
 }
 
-/* Register.css */
-
+/* Register Styles */
 .register-container {
   max-width: 400px;
   margin: 0 auto;
@@ -214,8 +236,8 @@ max-width: 100%;
   font-size: 24px;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    transform: rotateY(-10deg) rotateX(10deg);
-    perspective: 1000px;
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
 }
 
 .register-form {
@@ -236,30 +258,30 @@ max-width: 100%;
   border-radius: 5px;
   background-color: #007bff;
   color: #fff;
-  cursor: pointer
+  cursor: pointer;
 }
 
-/* SingleBook.css */
-
-.single-book-container {border: 3px solid #090808; /* Add border */
+/* Single Book Styles */
+.single-book-container {
+  border: 3px solid #090808; /* Add border */
   border-radius: 8px; /* Add border radius for rounded corners */
   background-color: #ccc;
-  max-width: 600px;
+  max-width: 300px;
   margin: 0 auto;
   padding: 20px;
-  opacity: .80;
+  opacity: 0.80;
 }
 
 .single-book-title {
   font-size: 24px;
   margin-bottom: 10px;
   text-shadow: 2px 2px 4px rgba(112, 33, 249, 0.5);
-    transform: rotateY(-10deg) rotateX(10deg);
-    perspective: 1000px;
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
 }
 
 .single-book-info {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .single-book-description {
@@ -267,7 +289,7 @@ max-width: 100%;
 }
 
 .single-book-image {
-  max-width: 100%;
+  max-width: 50%;
   height: auto;
   margin-bottom: 20px;
 }
@@ -283,16 +305,17 @@ max-width: 100%;
   text-decoration: underline;
 }
 
-/* Home */
-.home-container {background-color: #ccc;
+/* Home Styles */
+.home-container {
+  background-color: #ccc;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    transform: rotateY(-10deg) rotateX(10deg);
-    perspective: 1000px;
-    border: 3px solid #090808; /* Add border */
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+  border: 3px solid #090808; /* Add border */
   border-radius: 8px; /* Add border radius for rounded corners */
 }
 
@@ -306,38 +329,142 @@ max-width: 100%;
   color: #5f00f8;
 }
 
-/* File: src/components/Orders/OrderHistory.css */
-.order-history {
-  padding: 20px;
-  background: #f5f5f5;
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .book img {
+    max-width: 70%; /* Adjust image size for medium screens */
+  }
 }
 
-.order-history h2 {
-  margin-bottom: 20px;
+@media (max-width: 992px) {
+  .container {
+    max-width: 90%; /* Adjust container width for tablets */
+  }
+
+  .book img {
+    max-width: 60%; /* Adjust image size for tablets */
+  }
 }
 
-.order-history ul {
-  list-style-type: none;
-  padding: 0;
+@media (max-width: 768px) {
+  .container {
+    max-width: 95%; /* Adjust container width for small tablets */
+  }
+
+  .book img {
+    max-width: 50%; /* Adjust image size for small tablets */
+  }
+
+  .single-book-container {
+    max-width: 90%; /* Adjust single book container width for small tablets */
+  }
 }
 
-.order-history li {
-  background: #fff;
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+@media (max-width: 576px) {
+  .container {
+    max-width: 100%; /* Adjust container width for mobile devices */
+    padding: 10px; /* Adjust padding for mobile devices */
+  }
 
-.order-history button {
-  margin-top: 10px;
-  padding: 10px;
-  border: none;
-  background: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
+  .book img {
+    max-width: 100%; /* Adjust image size for mobile devices */
+  }
 
-.order-history button:hover {
-  background: #0056b3;
-}
+  .single-book-container {
+    padding: 10px; /* Adjust padding for mobile devices */
+  }
+
+  .navigation-list {
+    flex-wrap: wrap; /* Allow navigation items to wrap on small screens */
+  }
+
+  .navigation-item {
+    margin-right: 0; /* Remove margin between navigation items on small screens */
+    margin-bottom: 5px; /* Add bottom margin between navigation items on small screens */
+  }
+
+  /* Cart CSS*/
+  .cart-container {
+    background-color: #dfd9d2;
+    display: grid;
+    color: rgb(23, 22, 22);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    max-height: 80vh; /* Set a maximum height for the container */
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds the container height */
+    opacity: 0.90;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    perspective: 1000px;
+  }
+  
+  .cart-item img {
+    max-width: 50%; /* Reduce image size */
+    height: auto;
+  }
+  
+  .cart-items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; /* Add gap between items */
+  }
+  
+  .cart-item {
+    border: 2px solid #0a0a0a;
+    padding: 10px;
+    border-spacing: 1cap;
+  }
+  
+  .cart-item h3 {
+    border: 1px solid #b07c03;
+    margin-top: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: rotateY(-10deg) rotateX(10deg);
+    perspective: 1000px;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 1200px) {
+    .cart-items {
+      grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .cart-items {
+      grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .cart-items {
+      grid-template-columns: 1fr; /* 1 column on very small screens */
+    }
+  }
+  
+  .cart-summary {
+    border-top: 2px solid #0a0a0a;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-shadow: none; /* No text shadow for summary */
+  }
+  
+  .cart-summary-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .cart-checkout-button {
+    background-color: #b07c03;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .cart-checkout-button:hover {
+    background-color: #7a5202;
+  }
+  
+}  
