@@ -1,10 +1,8 @@
-// Navigation.jsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Navigation = () => {
-  console.log("Rendering Navigation component");
+  // Console.log statement removed to avoid unnecessary console output in production
   return (
     <nav className="navigation">
       <ul className="navigation-list">
@@ -24,7 +22,10 @@ const Navigation = () => {
           <Link to="/account" className="navigation-link">Account</Link>
         </li>
         <li className="navigation-item">
-          <Link to="/Cart" className="navigation-link">Cart</Link>
+          <Link to="/cart" className="navigation-link">Cart</Link>
+        </li>
+        <li className="navigation-item">
+          <Link to="/checkout" className="navigation-link">Checkout</Link>
         </li>
       </ul>
     </nav>

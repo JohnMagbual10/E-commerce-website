@@ -8,6 +8,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Account from './components/Account';
 import Home from './components/Home';
+import Checkout from './components/Checkout'; // Import Checkout component
 import './index.css';
 
 function App() {
@@ -32,6 +33,14 @@ function App() {
     setCartItems((prevItems) => prevItems.filter(item => item.id !== bookId));
   };
 
+  const handleCheckout = (billingInfo) => {
+    // Handle checkout logic here, e.g., process payment, clear cart, etc.
+    console.log('Handling checkout with:', billingInfo);
+    // Example: Clear cart after successful checkout
+    setCartItems([]);
+  };
+  
+
   return (
     <div>
       <video className="video-background" autoPlay loop muted>
@@ -48,6 +57,7 @@ function App() {
         <Route path="/register" element={<Register setToken={handleLogin} />} />
         <Route path="/account" element={<Account token={token} />} />
         <Route path="/cart" element={<Cart cartItems={cartItems} handleRemove={handleRemove} />} />
+        <Route path="/checkout" element={<Checkout cartItems={cartItems} handleCheckout={handleCheckout} />} />
       </Routes>      
     </div>
   );

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-
 const Cart = ({ cartItems, handleRemove }) => {
   // Ensure cartItems is an array
   if (!Array.isArray(cartItems)) {
@@ -10,6 +9,12 @@ const Cart = ({ cartItems, handleRemove }) => {
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + (item.price || 0), 0).toFixed(2);
+  };
+
+  // Function to handle checkout button click
+  const handleCheckoutClick = () => {
+    // You can perform any necessary actions here before navigating to checkout
+    console.log('Proceeding to checkout...');
   };
 
   return (
@@ -34,7 +39,12 @@ const Cart = ({ cartItems, handleRemove }) => {
       <div className="cart-summary">
         <h3 className="cart-summary-title">Cart Summary</h3>
         <p className="cart-total">Total: ${calculateTotal()}</p>
-        <button className="cart-checkout-button">Proceed to Checkout</button>
+        {/* Link to checkout page */}
+        <Link to="/checkout">
+          <button className="cart-checkout-button" onClick={handleCheckoutClick}>
+            Proceed to Checkout
+          </button>
+        </Link>
       </div>
     </div>
   );
