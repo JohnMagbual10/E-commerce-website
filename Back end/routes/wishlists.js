@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { fetchWishlists, createWishlist } = require('../db');
+const { fetchWishlists, createWishlist } = require('../server/db');
 
 router.get('/', async (req, res, next) => {
     try {

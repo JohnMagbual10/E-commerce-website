@@ -1,0 +1,12 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form > * {
+  margin: 0.5rem;
+}
+
+li.favorite {
+  border: solid 1px dodgerBlue;
+}

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { fetchCategories, createCategory } = require('../db');
+const { fetchCategories, createCategory } = require('../server/db');
 
 router.get('/', async (req, res, next) => {
     try {

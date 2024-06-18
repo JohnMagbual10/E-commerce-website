@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { fetchCoupons, createCoupon } = require('../db');
+const { fetchCoupons, createCoupon } = require('../server/db');
 
 router.get('/', async (req, res, next) => {
     try {

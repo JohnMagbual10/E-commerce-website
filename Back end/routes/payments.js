@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { fetchPayments, createPayment } = require('../db');
+const { fetchPayments, createPayment } = require('../server/db');
 
 router.get('/', async (req, res, next) => {
     try {

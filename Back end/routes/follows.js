@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { fetchFollows, createFollow } = require('../db');
+const { fetchFollows, createFollow } = require('../server/db');
 
 router.get('/', async (req, res, next) => {
     try {
