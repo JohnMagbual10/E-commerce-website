@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 const Login = ({ setToken }) => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    username: '',
+    password: '',
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ const Login = ({ setToken }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,20 +25,16 @@ const Login = ({ setToken }) => {
         body: JSON.stringify(formData),
       });
       if (!response.ok) {
-        throw new Error('Login failed');
+        const data = await response.json();
+        throw new Error(data.message || 'Login failed');
       }
       const data = await response.json();
-      const { token } = data;
-      setToken(token);
-      setError(null);
-      console.log('Login successful');
-      console.log('Token:', token);
-      setFormData({ // Reset form fields after successful login
-        email: '',
-        password: ''
-      });
+      const { user, message, token } = data;
+      console.log('Login Successful:', data); // Log the response data for debugging
+      setToken(token); // Set token using the callback function
+      // Optionally, you can do something with the user data and success message here
     } catch (error) {
-      setError('Login failed. Please check your credentials.');
+      setError(error.message || 'Login failed. Please try again.');
       console.error('Login Error:', error);
     } finally {
       setLoading(false);
@@ -48,15 +44,15 @@ const Login = ({ setToken }) => {
   return (
     <div className="login-container">
       <h2 className="login-title">Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
         <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
           onChange={handleChange}
-          className="login-input"
           required
+          className="login-input"
         />
         <input
           type="password"
@@ -64,8 +60,8 @@ const Login = ({ setToken }) => {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          className="login-input"
           required
+          className="login-input"
         />
         <button type="submit" disabled={loading} className="login-button">
           {loading ? 'Logging in...' : 'Login'}

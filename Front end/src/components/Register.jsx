@@ -5,7 +5,8 @@ const Register = ({ setToken }) => {
     firstname: '',
     lastname: '',
     email: '',
-    password: ''
+    password: '',
+    username: '', // Ensure username is included in the state
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ const Register = ({ setToken }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/register', {
+      const response = await fetch('/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,9 +33,9 @@ const Register = ({ setToken }) => {
       }
       const data = await response.json();
       const { user, message, token } = data;
-      console.log(data); // Log the response data for debugging
+      console.log('Registration Successful:', data); // Log the response data for debugging
       setToken(token); // Set token using the callback function
-      // You can do something with the user data and success message here
+      // Optionally, you can do something with the user data and success message here
     } catch (error) {
       setError(error.message || 'Registration failed. Please try again.');
       console.error('Registration Error:', error);
@@ -70,6 +71,15 @@ const Register = ({ setToken }) => {
           name="email"
           placeholder="Email"
           value={formData.email}
+          onChange={handleChange}
+          required
+          className="register-input"
+        />
+        <input
+          type="text"
+          name="username"
+          placeholder="Username" // Add a username input field
+          value={formData.username}
           onChange={handleChange}
           required
           className="register-input"
