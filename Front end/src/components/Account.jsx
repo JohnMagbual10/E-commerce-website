@@ -6,7 +6,6 @@ const Account = ({ token }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('Fetching user data...');
     const fetchUserData = async () => {
       if (!token) {
         setError('No account found. Please log in.');
@@ -15,25 +14,22 @@ const Account = ({ token }) => {
       }
 
       try {
-        const response = await fetch('/api/users', {
+        const response = await fetch(`/api/users/:id`, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
-
-        console.log('API Response:', response); // Log API response
 
         if (!response.ok) {
           throw new Error('Failed to fetch user data');
         }
 
         const data = await response.json();
-        console.log('Response Data:', data); // Log user data
         setUserData(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching user data:', error); // Log error
+        console.error('Error fetching user data:', error);
         setError('Failed to fetch user data. Please try again later.');
         setLoading(false);
       }
@@ -42,13 +38,8 @@ const Account = ({ token }) => {
     fetchUserData();
   }, [token]);
 
-  // Function to clear user data and redirect to home page when logging out
   const handleLogout = () => {
-    setUserData(null); // Clear user data
-    setLoading(true); // Set loading state to true
-    localStorage.removeItem('token'); // Remove token from localStorage
-    setError(null); // Clear any error messages
-    window.location.href = '/'; // Redirect to home page
+    // Handle logout logic here
   };
 
   return (

@@ -8,7 +8,6 @@ const client = new Client({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
 });
 
-// JWT secret setup
 const JWT_SECRET = process.env.JWT || 'shhh';
 
 if (JWT_SECRET === 'shhh') {
@@ -26,9 +25,14 @@ async function connectDB() {
   }
 }
 
+// Ensure the database connection is established before performing operations
+connectDB();
+
 // Function to create database tables
 async function createTables() {
   const createTablesQuery = `
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
     DROP TABLE IF EXISTS follows, wishlist_items, wishlists, reviews, payments, order_items, orders, product_images, coupons, products, categories, users CASCADE;
 
     CREATE TABLE IF NOT EXISTS users (
@@ -146,8 +150,6 @@ async function createTables() {
       followed_user_id UUID REFERENCES users(id),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
-    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
   `;
 
   try {
@@ -160,25 +162,16 @@ async function createTables() {
 }
 
 // Function to create a new user
-async function createUser({ username, password, email, firstName, lastName, address, phoneNumber, isAdmin }) {
+async function createUser({ username, password, email, firstName, lastName, address, phoneNumber, isAdmin = false }) {
   const hashedPassword = await bcrypt.hash(password, 10);
   const insertUserQuery = `
     INSERT INTO users(id, username, password, email, first_name, last_name, address, phone_number, is_admin, created_at, updated_at)
     VALUES(uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     RETURNING id, username, email, first_name, last_name, address, phone_number, is_admin, created_at, updated_at
   `;
-  const values = [
-    username,
-    hashedPassword,
-    email,
-    firstName,
-    lastName,
-    address,
-    phoneNumber,
-    isAdmin || false,
-  ];
+  const values = [username, hashedPassword, email, firstName, lastName, address, phoneNumber, isAdmin];
 
-  try { 
+  try {
     const { rows } = await client.query(insertUserQuery, values);
     return rows[0];
   } catch (error) {
@@ -188,134 +181,47 @@ async function createUser({ username, password, email, firstName, lastName, addr
 
 // Function to fetch a user by username
 async function fetchUserByUsername(username) {
-  try {
-    const fetchUserQuery = `
-      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
-      FROM users
-      WHERE username = $1
-    `;
-    const response = await client.query(fetchUserQuery, [username]);
+  const fetchUserQuery = `
+    SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+    FROM users
+    WHERE username = $1
+  `;
+  const response = await client.query(fetchUserQuery, [username]);
 
-    if (!response.rows.length) {
-      return null; // User not found
-    }
-
-    return response.rows[0]; // Return the first row (assuming username is unique)
-  } catch (err) {
-    console.error('Fetch user by username error:', err.message);
-    throw new Error('Failed to fetch user by username');
+  if (!response.rows.length) {
+    return null;
   }
+  return response.rows[0];
 }
 
 // Function to fetch a user by email
 async function fetchUserByEmail(email) {
-  try {
-    const fetchUserQuery = `
-      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
-      FROM users
-      WHERE email = $1
-    `;
-    const response = await client.query(fetchUserQuery, [email]);
+  const fetchUserQuery = `
+    SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+    FROM users
+    WHERE email = $1
+  `;
+  const response = await client.query(fetchUserQuery, [email]);
 
-    if (!response.rows.length) {
-      return null; // User not found
-    }
-
-    return response.rows[0]; // Return the first row (assuming email is unique)
-  } catch (err) {
-    console.error('Fetch user by email error:', err.message);
-    throw new Error('Failed to fetch user by email');
+  if (!response.rows.length) {
+    return null;
   }
+  return response.rows[0];
 }
 
 // Function to find a user by username or email
 async function findUserByUsernameOrEmail(identifier) {
-  try {
-    const findUserQuery = `
-      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
-      FROM users
-      WHERE username = $1 OR email = $1
-    `;
-    const response = await client.query(findUserQuery, [identifier]);
-
-    if (!response.rows.length) {
-      return null; // User not found
-    }
-
-    return response.rows[0]; // Return the first row (assuming username or email is unique)
-  } catch (err) {
-    console.error('Find user by username or email error:', err.message);
-    throw new Error('Failed to find user by username or email');
-  }
-}
-
-// Function to create a new product
-async function createProduct({ name, description, price, stockQuantity, categoryId }) {
-  const insertProductQuery = `
-    INSERT INTO products(id, name, description, price, stock_quantity, category_id, created_at, updated_at)
-    VALUES($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    RETURNING *
+  const findUserQuery = `
+    SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+    FROM users
+    WHERE username = $1 OR email = $1
   `;
-  const values = [
-    uuidv4(),
-    name,
-    description,
-    price,
-    stockQuantity,
-    categoryId,
-  ];
+  const response = await client.query(findUserQuery, [identifier]);
 
-  try {
-    const result = await client.query(insertProductQuery, values);
-    return result.rows[0];
-  } catch (err) {
-    console.error('Error creating product:', err.message);
-    throw new Error('Failed to create product');
+  if (!response.rows.length) {
+    return null;
   }
-}
-
-// Function to create a favorite product for a user
-async function createFavorite({ userId, productId }) {
-  try {
-    // Check if the wishlist exists for the user, if not, create it
-    const createWishlistQuery = `
-      INSERT INTO wishlists(id, user_id)
-      VALUES($1, $2)
-      ON CONFLICT (user_id) DO NOTHING
-      RETURNING id
-    `;
-    const wishlistResponse = await client.query(createWishlistQuery, [uuidv4(), userId]);
-
-    let wishlistId = wishlistResponse.rows.length ? wishlistResponse.rows[0].id : (await client.query('SELECT id FROM wishlists WHERE user_id=$1', [userId])).rows[0].id;
-
-    // Insert the product into the wishlist_items table
-    const insertFavoriteQuery = `
-      INSERT INTO wishlist_items(id, wishlist_id, product_id, created_at, updated_at)
-      VALUES($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      RETURNING *
-    `;
-    const favoriteResponse = await client.query(insertFavoriteQuery, [uuidv4(), wishlistId, productId]);
-
-    return favoriteResponse.rows[0];
-  } catch (err) {
-    console.error('Error creating favorite:', err.message);
-    throw new Error('Failed to create favorite');
-  }
-}
-
-// Function to delete a favorite product for a user
-async function destroyFavorite({ userId, productId }) {
-  try {
-    const deleteFavoriteQuery = `
-      DELETE FROM wishlist_items
-      WHERE wishlist_id = (SELECT id FROM wishlists WHERE user_id=$1)
-        AND product_id=$2
-    `;
-    await client.query(deleteFavoriteQuery, [userId, productId]);
-  } catch (err) {
-    console.error('Error deleting favorite:', err.message);
-    throw new Error('Failed to delete favorite');
-  }
+  return response.rows[0];
 }
 
 // Function to authenticate a user
@@ -370,6 +276,24 @@ async function findUserWithToken(token) {
   }
 }
 
+// Function to create a new product
+async function createProduct({ name, description, price, stockQuantity, categoryId }) {
+  const insertProductQuery = `
+    INSERT INTO products(id, name, description, price, stock_quantity, category_id, created_at, updated_at)
+    VALUES($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    RETURNING *
+  `;
+  const values = [uuidv4(), name, description, price, stockQuantity, categoryId];
+
+  try {
+    const result = await client.query(insertProductQuery, values);
+    return result.rows[0];
+  } catch (err) {
+    console.error('Error creating product:', err.message);
+    throw new Error('Failed to create product');
+  }
+}
+
 // Function to fetch all users
 async function fetchUsers() {
   try {
@@ -398,6 +322,43 @@ async function fetchProducts() {
     console.error('Fetch products error:', err.message);
     throw new Error('Failed to fetch products');
   }
+}
+
+// Function to create a favorite product for a user
+async function createFavorite({ userId, productId }) {
+  try {
+    const createWishlistQuery = `
+      INSERT INTO wishlists(id, user_id)
+      VALUES($1, $2)
+      ON CONFLICT (user_id) DO NOTHING
+      RETURNING id
+    `;
+    const wishlistResponse = await client.query(createWishlistQuery, [uuidv4(), userId]);
+
+    let wishlistId = wishlistResponse.rows.length ? wishlistResponse.rows[0].id : (await client.query('SELECT id FROM wishlists WHERE user_id=$1', [userId])).rows[0].id;
+
+    const insertFavoriteQuery = `
+      INSERT INTO wishlist_items(id, wishlist_id, product_id, created_at, updated_at)
+      VALUES($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      RETURNING *
+    `;
+    const favoriteResponse = await client.query(insertFavoriteQuery, [uuidv4(), wishlistId, productId]);
+
+    return favoriteResponse.rows[0];
+  } catch (err) {
+    console.error('Error creating favorite:', err.message);
+    throw new Error('Failed to create favorite');
+  }
+}
+
+// Function to delete a favorite product for a user
+async function destroyFavorite({ userId, productId }) {
+  const deleteFavoriteQuery = `
+    DELETE FROM wishlist_items
+    WHERE wishlist_id = (SELECT id FROM wishlists WHERE user_id=$1)
+      AND product_id=$2
+  `;
+  await client.query(deleteFavoriteQuery, [userId, productId]);
 }
 
 // Function to fetch all favorite products for a user
