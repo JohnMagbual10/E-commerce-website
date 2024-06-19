@@ -20,7 +20,7 @@ const Register = ({ setToken }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

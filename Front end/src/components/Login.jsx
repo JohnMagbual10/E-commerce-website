@@ -16,23 +16,25 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
+
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || 'Login failed');
       }
+
       const data = await response.json();
-      const { user, message, token } = data;
-      console.log('Login Successful:', data); // Log the response data for debugging
-      setToken(token); // Set token using the callback function
-      // Optionally, you can do something with the user data and success message here
+      const { token } = data;
+      setToken(token);
+      console.log('Login Successful:', data);
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.');
       console.error('Login Error:', error);

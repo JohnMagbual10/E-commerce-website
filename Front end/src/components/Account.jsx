@@ -15,7 +15,7 @@ const Account = ({ token }) => {
       }
 
       try {
-        const response = await fetch('https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me', {
+        const response = await fetch('/api/users', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -42,7 +42,6 @@ const Account = ({ token }) => {
     fetchUserData();
   }, [token]);
 
-
   // Function to clear user data and redirect to home page when logging out
   const handleLogout = () => {
     setUserData(null); // Clear user data
@@ -60,17 +59,20 @@ const Account = ({ token }) => {
       {userData && (
         <div>
           <p className="account-info">User ID: {userData.id}</p>
-          <p className="account-info">Name: {userData.firstname} {userData.lastname}</p>
+          <p className="account-info">Username: {userData.username}</p>
+          <p className="account-info">Name: {userData.first_name} {userData.last_name}</p>
           <p className="account-info">Email: {userData.email}</p>
-          {/* Display user's books here */}
-          <p className="account-info">Books:</p>
+          <p className="account-info">Address: {userData.address}</p>
+          <p className="account-info">Phone Number: {userData.phone_number}</p>
+          <p className="account-info">Admin: {userData.is_admin ? 'Yes' : 'No'}</p>
+          <p className="account-info">Camping and Hiking Products:</p>
           <ul>
-            {userData.books.length > 0 ? (
-              userData.books.map(book => (
-                <li key={book.id}>{book.title}</li>
+            {userData.products && userData.products.length > 0 ? (
+              userData.products.map(product => (
+                <li key={product.id}>{product.name} - {product.category}</li>
               ))
             ) : (
-              <li>No books found</li>
+              <li>No products found</li>
             )}
           </ul>
         </div>
