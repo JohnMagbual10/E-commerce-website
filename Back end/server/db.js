@@ -29,8 +29,6 @@ async function connectDB() {
 // Function to create database tables
 async function createTables() {
   const createTablesQuery = `
-    
-    
     DROP TABLE IF EXISTS follows, wishlist_items, wishlists, reviews, payments, order_items, orders, product_images, coupons, products, categories, users CASCADE;
 
     CREATE TABLE IF NOT EXISTS users (
@@ -46,7 +44,6 @@ async function createTables() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       is_admin BOOLEAN DEFAULT FALSE
     );
-    
 
     CREATE TABLE IF NOT EXISTS categories (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -149,6 +146,7 @@ async function createTables() {
       followed_user_id UUID REFERENCES users(id),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+    
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
   `;
 
@@ -180,16 +178,13 @@ async function createUser({ username, password, email, firstName, lastName, addr
     isAdmin || false,
   ];
 
-  try {
-    const { rows } = await pool.query(insertUserQuery, values);
+  try { 
+    const { rows } = await client.query(insertUserQuery, values);
     return rows[0];
   } catch (error) {
     throw new Error(`Failed to create user: ${error.message}`);
   }
 }
-
-
-
 
 // Function to fetch a user by username
 async function fetchUserByUsername(username) {
@@ -209,6 +204,48 @@ async function fetchUserByUsername(username) {
   } catch (err) {
     console.error('Fetch user by username error:', err.message);
     throw new Error('Failed to fetch user by username');
+  }
+}
+
+// Function to fetch a user by email
+async function fetchUserByEmail(email) {
+  try {
+    const fetchUserQuery = `
+      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+      FROM users
+      WHERE email = $1
+    `;
+    const response = await client.query(fetchUserQuery, [email]);
+
+    if (!response.rows.length) {
+      return null; // User not found
+    }
+
+    return response.rows[0]; // Return the first row (assuming email is unique)
+  } catch (err) {
+    console.error('Fetch user by email error:', err.message);
+    throw new Error('Failed to fetch user by email');
+  }
+}
+
+// Function to find a user by username or email
+async function findUserByUsernameOrEmail(identifier) {
+  try {
+    const findUserQuery = `
+      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+      FROM users
+      WHERE username = $1 OR email = $1
+    `;
+    const response = await client.query(findUserQuery, [identifier]);
+
+    if (!response.rows.length) {
+      return null; // User not found
+    }
+
+    return response.rows[0]; // Return the first row (assuming username or email is unique)
+  } catch (err) {
+    console.error('Find user by username or email error:', err.message);
+    throw new Error('Failed to find user by username or email');
   }
 }
 
@@ -291,12 +328,18 @@ async function authenticate({ username, password }) {
     `;
     const response = await client.query(findUserQuery, [username]);
 
-    if (!response.rows.length || !(await bcrypt.compare(password, response.rows[0].password))) {
+    if (!response.rows.length) {
+      throw new Error('Invalid credentials');
+    }
+
+    const match = await bcrypt.compare(password, response.rows[0].password);
+    if (!match) {
       throw new Error('Invalid credentials');
     }
 
     const token = jwt.sign({ id: response.rows[0].id }, JWT_SECRET);
     return { token };
+
   } catch (err) {
     console.error('Authentication error:', err.message);
     throw new Error('Authentication failed');
@@ -388,4 +431,5 @@ module.exports = {
   authenticate,
   findUserWithToken,
   fetchUserByUsername,
+  findUserByUsernameOrEmail,
 };
