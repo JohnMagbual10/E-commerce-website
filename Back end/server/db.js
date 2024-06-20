@@ -1,10 +1,10 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// PostgreSQL client initialization
-const client = new Client({
+// PostgreSQL pool initialization
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
 });
 
@@ -15,18 +15,13 @@ if (JWT_SECRET === 'shhh') {
 }
 
 // Connect to PostgreSQL database
-async function connectDB() {
-  try {
-    await client.connect();
-    console.log('Connected to PostgreSQL database');
-  } catch (err) {
-    console.error('Error connecting to database:', err.message);
-    throw new Error('Failed to connect to database');
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Error acquiring client', err.stack);
   }
-}
-
-// Ensure the database connection is established before performing operations
-connectDB();
+  console.log('Connected to PostgreSQL database');
+  client.release(); // Release the client back to the pool
+});
 
 // Function to create database tables
 async function createTables() {
@@ -152,12 +147,15 @@ async function createTables() {
     );
   `;
 
+  const client = await pool.connect();
   try {
     await client.query(createTablesQuery);
     console.log('Tables created');
   } catch (err) {
     console.error('Error creating tables:', err.message);
     throw new Error('Failed to create tables');
+  } finally {
+    client.release(); // Release the client back to the pool
   }
 }
 
@@ -171,11 +169,14 @@ async function createUser({ username, password, email, firstName, lastName, addr
   `;
   const values = [username, hashedPassword, email, firstName, lastName, address, phoneNumber, isAdmin];
 
+  const client = await pool.connect();
   try {
     const { rows } = await client.query(insertUserQuery, values);
     return rows[0];
   } catch (error) {
     throw new Error(`Failed to create user: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
 }
 
@@ -186,12 +187,19 @@ async function fetchUserByUsername(username) {
     FROM users
     WHERE username = $1
   `;
-  const response = await client.query(fetchUserQuery, [username]);
 
-  if (!response.rows.length) {
-    return null;
+  const client = await pool.connect();
+  try {
+    const response = await client.query(fetchUserQuery, [username]);
+    if (!response.rows.length) {
+      return null;
+    }
+    return response.rows[0];
+  } catch (error) {
+    throw new Error(`Failed to fetch user by username: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
-  return response.rows[0];
 }
 
 // Function to fetch a user by email
@@ -201,12 +209,19 @@ async function fetchUserByEmail(email) {
     FROM users
     WHERE email = $1
   `;
-  const response = await client.query(fetchUserQuery, [email]);
 
-  if (!response.rows.length) {
-    return null;
+  const client = await pool.connect();
+  try {
+    const response = await client.query(fetchUserQuery, [email]);
+    if (!response.rows.length) {
+      return null;
+    }
+    return response.rows[0];
+  } catch (error) {
+    throw new Error(`Failed to fetch user by email: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
-  return response.rows[0];
 }
 
 // Function to find a user by username or email
@@ -216,39 +231,45 @@ async function findUserByUsernameOrEmail(identifier) {
     FROM users
     WHERE username = $1 OR email = $1
   `;
-  const response = await client.query(findUserQuery, [identifier]);
 
-  if (!response.rows.length) {
-    return null;
+  const client = await pool.connect();
+  try {
+    const response = await client.query(findUserQuery, [identifier]);
+    if (!response.rows.length) {
+      return null;
+    }
+    return response.rows[0];
+  } catch (error) {
+    throw new Error(`Failed to find user by username or email: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
-  return response.rows[0];
 }
 
 // Function to authenticate a user
 async function authenticate({ username, password }) {
-  try {
-    const findUserQuery = `
-      SELECT id, username, password
-      FROM users
-      WHERE username=$1
-    `;
-    const response = await client.query(findUserQuery, [username]);
+  const findUserQuery = `
+    SELECT id, username, password
+    FROM users
+    WHERE username = $1
+  `;
 
+  const client = await pool.connect();
+  try {
+    const response = await client.query(findUserQuery, [username]);
     if (!response.rows.length) {
       throw new Error('Invalid credentials');
     }
-
     const match = await bcrypt.compare(password, response.rows[0].password);
     if (!match) {
       throw new Error('Invalid credentials');
     }
-
     const token = jwt.sign({ id: response.rows[0].id }, JWT_SECRET);
     return { token };
-
-  } catch (err) {
-    console.error('Authentication error:', err.message);
-    throw new Error('Authentication failed');
+  } catch (error) {
+    throw new Error(`Authentication failed: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
 }
 
@@ -261,18 +282,22 @@ async function findUserWithToken(token) {
     const findUserQuery = `
       SELECT id, username
       FROM users
-      WHERE id=$1
+      WHERE id = $1
     `;
-    const response = await client.query(findUserQuery, [userId]);
-
-    if (!response.rows.length) {
-      throw new Error('User not found');
+    const client = await pool.connect();
+    try {
+      const response = await client.query(findUserQuery, [userId]);
+      if (!response.rows.length) {
+        throw new Error('User not found');
+      }
+      return response.rows[0];
+    } catch (error) {
+      throw new Error(`Failed to find user with token: ${error.message}`);
+    } finally {
+      client.release(); // Release the client back to the pool
     }
-
-    return response.rows[0];
-  } catch (err) {
-    console.error('Find user error:', err.message);
-    throw new Error('Failed to find user with token');
+  } catch (error) {
+    throw new Error(`Failed to verify token: ${error.message}`);
   }
 }
 
@@ -285,69 +310,101 @@ async function createProduct({ name, description, price, stockQuantity, category
   `;
   const values = [uuidv4(), name, description, price, stockQuantity, categoryId];
 
+  const client = await pool.connect();
   try {
     const result = await client.query(insertProductQuery, values);
     return result.rows[0];
-  } catch (err) {
-    console.error('Error creating product:', err.message);
-    throw new Error('Failed to create product');
+  } catch (error) {
+    throw new Error(`Failed to create product: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
 }
 
 // Function to fetch all users
 async function fetchUsers() {
+  const fetchUsersQuery = `
+    SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
+    FROM users
+  `;
+
+  const client = await pool.connect();
   try {
-    const fetchUsersQuery = `
-      SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
-      FROM users
-    `;
     const response = await client.query(fetchUsersQuery);
     return response.rows;
-  } catch (err) {
-    console.error('Fetch users error:', err.message);
-    throw new Error('Failed to fetch users');
+  } catch (error) {
+    throw new Error(`Failed to fetch users: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
+  }
+}
+
+// Function to fetch user details by ID
+async function fetchUserById(userId) {
+  const fetchUserQuery = `
+    SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
+    FROM users
+    WHERE id = $1
+  `;
+
+  const client = await pool.connect();
+  try {
+    const response = await client.query(fetchUserQuery, [userId]);
+    if (!response.rows.length) {
+      return null;
+    }
+    return response.rows[0];
+  } catch (error) {
+    throw new Error(`Failed to fetch user by ID: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
 }
 
 // Function to fetch all products
 async function fetchProducts() {
+  const fetchProductsQuery = `
+    SELECT *
+    FROM products
+  `;
+
+  const client = await pool.connect();
   try {
-    const fetchProductsQuery = `
-      SELECT *
-      FROM products
-    `;
     const response = await client.query(fetchProductsQuery);
     return response.rows;
-  } catch (err) {
-    console.error('Fetch products error:', err.message);
-    throw new Error('Failed to fetch products');
+  } catch (error) {
+    throw new Error(`Failed to fetch products: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
 }
 
 // Function to create a favorite product for a user
 async function createFavorite({ userId, productId }) {
-  try {
-    const createWishlistQuery = `
-      INSERT INTO wishlists(id, user_id)
-      VALUES($1, $2)
-      ON CONFLICT (user_id) DO NOTHING
-      RETURNING id
-    `;
-    const wishlistResponse = await client.query(createWishlistQuery, [uuidv4(), userId]);
+  const createWishlistQuery = `
+    INSERT INTO wishlists(id, user_id)
+    VALUES($1, $2)
+    ON CONFLICT (user_id) DO NOTHING
+    RETURNING id
+  `;
 
-    let wishlistId = wishlistResponse.rows.length ? wishlistResponse.rows[0].id : (await client.query('SELECT id FROM wishlists WHERE user_id=$1', [userId])).rows[0].id;
+  const wishlistClient = await pool.connect();
+  try {
+    const wishlistResponse = await wishlistClient.query(createWishlistQuery, [uuidv4(), userId]);
+    let wishlistId = wishlistResponse.rows.length ? wishlistResponse.rows[0].id : (await wishlistClient.query('SELECT id FROM wishlists WHERE user_id=$1', [userId])).rows[0].id;
 
     const insertFavoriteQuery = `
       INSERT INTO wishlist_items(id, wishlist_id, product_id, created_at, updated_at)
       VALUES($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       RETURNING *
     `;
-    const favoriteResponse = await client.query(insertFavoriteQuery, [uuidv4(), wishlistId, productId]);
+    const favoriteResponse = await wishlistClient.query(insertFavoriteQuery, [uuidv4(), wishlistId, productId]);
 
     return favoriteResponse.rows[0];
-  } catch (err) {
-    console.error('Error creating favorite:', err.message);
-    throw new Error('Failed to create favorite');
+  } catch (error) {
+    throw new Error(`Failed to create favorite: ${error.message}`);
+  } finally {
+    wishlistClient.release(); // Release the client back to the pool
   }
 }
 
@@ -355,32 +412,42 @@ async function createFavorite({ userId, productId }) {
 async function destroyFavorite({ userId, productId }) {
   const deleteFavoriteQuery = `
     DELETE FROM wishlist_items
-    WHERE wishlist_id = (SELECT id FROM wishlists WHERE user_id=$1)
-      AND product_id=$2
+    WHERE wishlist_id = (SELECT id FROM wishlists WHERE user_id = $1)
+      AND product_id = $2
   `;
-  await client.query(deleteFavoriteQuery, [userId, productId]);
+
+  const client = await pool.connect();
+  try {
+    await client.query(deleteFavoriteQuery, [userId, productId]);
+  } catch (error) {
+    throw new Error(`Failed to delete favorite: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
+  }
 }
 
 // Function to fetch all favorite products for a user
 async function fetchFavorites(userId) {
+  const fetchFavoritesQuery = `
+    SELECT wi.*, p.name AS product_name, p.description AS product_description, p.price AS product_price
+    FROM wishlist_items wi
+    JOIN products p ON wi.product_id = p.id
+    WHERE wi.wishlist_id = (SELECT id FROM wishlists WHERE user_id = $1)
+  `;
+
+  const client = await pool.connect();
   try {
-    const fetchFavoritesQuery = `
-      SELECT wi.*, p.name AS product_name, p.description AS product_description, p.price AS product_price
-      FROM wishlist_items wi
-      JOIN products p ON wi.product_id = p.id
-      WHERE wi.wishlist_id = (SELECT id FROM wishlists WHERE user_id = $1)
-    `;
     const response = await client.query(fetchFavoritesQuery, [userId]);
     return response.rows;
-  } catch (err) {
-    console.error('Fetch favorites error:', err.message);
-    throw new Error('Failed to fetch favorites');
+  } catch (error) {
+    throw new Error(`Failed to fetch favorites: ${error.message}`);
+  } finally {
+    client.release(); // Release the client back to the pool
   }
 }
 
 module.exports = {
-  client,
-  connectDB,
+  pool,
   createTables,
   createUser,
   createProduct,
@@ -392,5 +459,6 @@ module.exports = {
   authenticate,
   findUserWithToken,
   fetchUserByUsername,
+  fetchUserById,
   findUserByUsernameOrEmail,
 };

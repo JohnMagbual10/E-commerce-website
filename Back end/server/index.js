@@ -1,5 +1,5 @@
 const express = require('express');
-const { client, createTables } = require('./db'); // Ensure these functions are correctly defined in db.js
+const { pool } = require('./db'); // Ensure `pool` is correctly imported from db.js
 const authRoutes = require('../routes/auth');
 const userRoutes = require('../routes/users');
 const categoryRoutes = require('../routes/categories');
@@ -43,10 +43,11 @@ app.use((err, req, res, next) => {
 // Initialize server and database connection
 const init = async () => {
     try {
-        await client.connect(); // Connect to the database
+        await pool.connect(); // Connect to the database using the pool
         console.log('Connected to database');
-        await createTables(); // Ensure tables are created or migrated
-        console.log('Tables created');
+
+        // Ensure tables are created or migrated (if necessary)
+        // Example: await createTables(); // Uncomment if needed
 
         // Start the Express server
         app.listen(port, () => {
@@ -56,7 +57,7 @@ const init = async () => {
         // Graceful shutdown: Close database connection on process termination
         process.on('SIGINT', async () => {
             console.log('\nSIGINT received: Closing database connection...');
-            await client.end(); // Close the database connection
+            await pool.end(); // Close the pool (all clients)
             console.log('Database connection closed');
             process.exit(0); // Exit process gracefully
         });
