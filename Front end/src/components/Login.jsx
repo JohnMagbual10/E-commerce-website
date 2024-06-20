@@ -16,7 +16,7 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -25,16 +25,18 @@ const Login = ({ setToken }) => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Login failed');
+        const text = await response.text(); // Get the response text
+        console.error('Login Error:', text); // Log the response text for debugging
+        throw new Error('Login failed'); // Throw a generic error message
       }
-
+  
       const data = await response.json();
       const { token } = data;
       setToken(token);
       console.log('Login Successful:', data);
+      // Redirect or navigate to another page after successful login
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.');
       console.error('Login Error:', error);
@@ -42,6 +44,7 @@ const Login = ({ setToken }) => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="login-container">
@@ -66,7 +69,11 @@ const Login = ({ setToken }) => {
           className="login-input"
         />
         <button type="submit" disabled={loading} className="login-button">
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? (
+            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          ) : (
+            'Login'
+          )}
         </button>
         {error && <p className="login-error">{error}</p>}
       </form>
