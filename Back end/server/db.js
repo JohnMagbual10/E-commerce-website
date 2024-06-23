@@ -188,6 +188,18 @@ async function createUser({ username, password, email, firstName, lastName, addr
   }
 }
 
+async function fetchUsers() {
+  try {
+    const query = 'SELECT id, username, email FROM users';
+    const { rows } = await client.query(query);
+    return rows;
+  } catch (err) {
+    console.error('Error fetching users:', err.message);
+    throw new Error('Failed to fetch users');
+  }
+}
+
+
 // Function to fetch a user by username
 async function fetchUserByUsername(username) {
   try {
@@ -306,6 +318,7 @@ module.exports = {
   connectDB,
   createTables,
   createUser,
+  fetchUsers,
   fetchUserByUsername,
   fetchUserByEmail,
   findUserByUsernameOrEmail,

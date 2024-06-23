@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const { client, createTables } = require('../server/db'); // Adjust path based on your project structure
 const authRoutes = require('../routes/auth'); // Adjust path based on your project structure
 const userRoutes = require('../routes/users'); // Adjust path based on your project structure
@@ -18,7 +17,6 @@ const followRoutes = require('../routes/follows'); // Adjust path based on your 
 const app = express();
 const port = process.env.PORT || 3000;
 // Middleware and routes setup
-app.use(cors());
 app.use(express.json());
 
 // Registering routes
