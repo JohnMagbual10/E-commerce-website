@@ -1,5 +1,5 @@
 const express = require('express');
-const { pool } = require('./db'); // Ensure `pool` is correctly imported from db.js
+const { Pool } = require('pg'); // Import Pool from pg
 const authRoutes = require('../routes/auth');
 const userRoutes = require('../routes/users');
 const categoryRoutes = require('../routes/categories');
@@ -18,6 +18,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+
+// Create a new Pool instance
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
+});
 
 // Registering routes
 app.use('/api/auth', authRoutes);
@@ -43,11 +48,9 @@ app.use((err, req, res, next) => {
 // Initialize server and database connection
 const init = async () => {
     try {
-        await pool.connect(); // Connect to the database using the pool
+        // Connect to the database using the pool
+        await pool.connect();
         console.log('Connected to database');
-
-        // Ensure tables are created or migrated (if necessary)
-        // Example: await createTables(); // Uncomment if needed
 
         // Start the Express server
         app.listen(port, () => {

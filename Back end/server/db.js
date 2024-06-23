@@ -1,27 +1,28 @@
-const { Pool } = require('pg');
+// db.js
+
+const { Client } = require('pg');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // PostgreSQL pool initialization
-const pool = new Pool({
+const client = new Client({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
 });
+
+client.connect()
+    .then(() => {
+        console.log('Connected to database');
+    })
+    .catch(err => {
+        console.error('Error connecting to database:', err);
+    });
 
 const JWT_SECRET = process.env.JWT || 'shhh';
 
 if (JWT_SECRET === 'shhh') {
   console.log('Warning: If deployed, set process.env.JWT to something other than "shhh"');
 }
-
-// Connect to PostgreSQL database
-pool.connect((err, client, release) => {
-  if (err) {
-    return console.error('Error acquiring client', err.stack);
-  }
-  console.log('Connected to PostgreSQL database');
-  client.release(); // Release the client back to the pool
-});
 
 // Function to create database tables
 async function createTables() {
@@ -328,7 +329,7 @@ async function fetchUsers() {
     FROM users
   `;
 
-  const client = await pool.connect();
+  const client = await client.connect();
   try {
     const response = await client.query(fetchUsersQuery);
     return response.rows;
@@ -379,86 +380,18 @@ async function fetchProducts() {
   }
 }
 
-// Function to create a favorite product for a user
-async function createFavorite({ userId, productId }) {
-  const createWishlistQuery = `
-    INSERT INTO wishlists(id, user_id)
-    VALUES($1, $2)
-    ON CONFLICT (user_id) DO NOTHING
-    RETURNING id
-  `;
-
-  const wishlistClient = await pool.connect();
-  try {
-    const wishlistResponse = await wishlistClient.query(createWishlistQuery, [uuidv4(), userId]);
-    let wishlistId = wishlistResponse.rows.length ? wishlistResponse.rows[0].id : (await wishlistClient.query('SELECT id FROM wishlists WHERE user_id=$1', [userId])).rows[0].id;
-
-    const insertFavoriteQuery = `
-      INSERT INTO wishlist_items(id, wishlist_id, product_id, created_at, updated_at)
-      VALUES($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      RETURNING *
-    `;
-    const favoriteResponse = await wishlistClient.query(insertFavoriteQuery, [uuidv4(), wishlistId, productId]);
-
-    return favoriteResponse.rows[0];
-  } catch (error) {
-    throw new Error(`Failed to create favorite: ${error.message}`);
-  } finally {
-    wishlistClient.release(); // Release the client back to the pool
-  }
-}
-
-// Function to delete a favorite product for a user
-async function destroyFavorite({ userId, productId }) {
-  const deleteFavoriteQuery = `
-    DELETE FROM wishlist_items
-    WHERE wishlist_id = (SELECT id FROM wishlists WHERE user_id = $1)
-      AND product_id = $2
-  `;
-
-  const client = await pool.connect();
-  try {
-    await client.query(deleteFavoriteQuery, [userId, productId]);
-  } catch (error) {
-    throw new Error(`Failed to delete favorite: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
-  }
-}
-
-// Function to fetch all favorite products for a user
-async function fetchFavorites(userId) {
-  const fetchFavoritesQuery = `
-    SELECT wi.*, p.name AS product_name, p.description AS product_description, p.price AS product_price
-    FROM wishlist_items wi
-    JOIN products p ON wi.product_id = p.id
-    WHERE wi.wishlist_id = (SELECT id FROM wishlists WHERE user_id = $1)
-  `;
-
-  const client = await pool.connect();
-  try {
-    const response = await client.query(fetchFavoritesQuery, [userId]);
-    return response.rows;
-  } catch (error) {
-    throw new Error(`Failed to fetch favorites: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
-  }
-}
-
+// Exporting all the functions and pool instance
 module.exports = {
-  pool,
+  client,
   createTables,
   createUser,
-  createProduct,
   fetchUsers,
-  fetchProducts,
-  fetchFavorites,
-  createFavorite,
-  destroyFavorite,
+  fetchUserById,
+  fetchUserByUsername,
+  fetchUserByEmail,
+  findUserByUsernameOrEmail,
   authenticate,
   findUserWithToken,
-  fetchUserByUsername,
-  fetchUserById,
-  findUserByUsernameOrEmail,
+  createProduct,
+  fetchProducts,
 };
