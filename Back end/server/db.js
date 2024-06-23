@@ -5,18 +5,18 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// PostgreSQL pool initialization
+// PostgreSQL client initialization
 const client = new Client({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
 });
 
 client.connect()
-    .then(() => {
-        console.log('Connected to database');
-    })
-    .catch(err => {
-        console.error('Error connecting to database:', err);
-    });
+  .then(() => {
+    console.log('Connected to database');
+  })
+  .catch(err => {
+    console.error('Error connecting to database:', err);
+  });
 
 const JWT_SECRET = process.env.JWT || 'shhh';
 
@@ -148,15 +148,12 @@ async function createTables() {
     );
   `;
 
-  const client = await pool.connect();
   try {
     await client.query(createTablesQuery);
     console.log('Tables created');
   } catch (err) {
     console.error('Error creating tables:', err.message);
     throw new Error('Failed to create tables');
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -170,14 +167,11 @@ async function createUser({ username, password, email, firstName, lastName, addr
   `;
   const values = [username, hashedPassword, email, firstName, lastName, address, phoneNumber, isAdmin];
 
-  const client = await pool.connect();
   try {
     const { rows } = await client.query(insertUserQuery, values);
     return rows[0];
   } catch (error) {
     throw new Error(`Failed to create user: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -189,7 +183,6 @@ async function fetchUserByUsername(username) {
     WHERE username = $1
   `;
 
-  const client = await pool.connect();
   try {
     const response = await client.query(fetchUserQuery, [username]);
     if (!response.rows.length) {
@@ -198,8 +191,6 @@ async function fetchUserByUsername(username) {
     return response.rows[0];
   } catch (error) {
     throw new Error(`Failed to fetch user by username: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -211,7 +202,6 @@ async function fetchUserByEmail(email) {
     WHERE email = $1
   `;
 
-  const client = await pool.connect();
   try {
     const response = await client.query(fetchUserQuery, [email]);
     if (!response.rows.length) {
@@ -220,8 +210,6 @@ async function fetchUserByEmail(email) {
     return response.rows[0];
   } catch (error) {
     throw new Error(`Failed to fetch user by email: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -233,7 +221,6 @@ async function findUserByUsernameOrEmail(identifier) {
     WHERE username = $1 OR email = $1
   `;
 
-  const client = await pool.connect();
   try {
     const response = await client.query(findUserQuery, [identifier]);
     if (!response.rows.length) {
@@ -242,8 +229,6 @@ async function findUserByUsernameOrEmail(identifier) {
     return response.rows[0];
   } catch (error) {
     throw new Error(`Failed to find user by username or email: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -255,7 +240,6 @@ async function authenticate({ username, password }) {
     WHERE username = $1
   `;
 
-  const client = await pool.connect();
   try {
     const response = await client.query(findUserQuery, [username]);
     if (!response.rows.length) {
@@ -269,8 +253,6 @@ async function authenticate({ username, password }) {
     return { token };
   } catch (error) {
     throw new Error(`Authentication failed: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -285,7 +267,6 @@ async function findUserWithToken(token) {
       FROM users
       WHERE id = $1
     `;
-    const client = await pool.connect();
     try {
       const response = await client.query(findUserQuery, [userId]);
       if (!response.rows.length) {
@@ -294,8 +275,6 @@ async function findUserWithToken(token) {
       return response.rows[0];
     } catch (error) {
       throw new Error(`Failed to find user with token: ${error.message}`);
-    } finally {
-      client.release(); // Release the client back to the pool
     }
   } catch (error) {
     throw new Error(`Failed to verify token: ${error.message}`);
@@ -311,14 +290,11 @@ async function createProduct({ name, description, price, stockQuantity, category
   `;
   const values = [uuidv4(), name, description, price, stockQuantity, categoryId];
 
-  const client = await pool.connect();
   try {
     const result = await client.query(insertProductQuery, values);
     return result.rows[0];
   } catch (error) {
     throw new Error(`Failed to create product: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -329,14 +305,11 @@ async function fetchUsers() {
     FROM users
   `;
 
-  const client = await client.connect();
   try {
     const response = await client.query(fetchUsersQuery);
     return response.rows;
   } catch (error) {
     throw new Error(`Failed to fetch users: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -348,7 +321,6 @@ async function fetchUserById(userId) {
     WHERE id = $1
   `;
 
-  const client = await pool.connect();
   try {
     const response = await client.query(fetchUserQuery, [userId]);
     if (!response.rows.length) {
@@ -357,8 +329,6 @@ async function fetchUserById(userId) {
     return response.rows[0];
   } catch (error) {
     throw new Error(`Failed to fetch user by ID: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
@@ -369,18 +339,15 @@ async function fetchProducts() {
     FROM products
   `;
 
-  const client = await pool.connect();
   try {
     const response = await client.query(fetchProductsQuery);
     return response.rows;
   } catch (error) {
     throw new Error(`Failed to fetch products: ${error.message}`);
-  } finally {
-    client.release(); // Release the client back to the pool
   }
 }
 
-// Exporting all the functions and pool instance
+// Exporting all the functions and client instance
 module.exports = {
   client,
   createTables,
