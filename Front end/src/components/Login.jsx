@@ -16,8 +16,13 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     try {
+      // Basic form validation
+      if (!formData.username || !formData.password) {
+        throw new Error('Username and password are required.');
+      }
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -25,18 +30,18 @@ const Login = ({ setToken }) => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (!response.ok) {
-        const text = await response.text(); // Get the response text
-        console.error('Login Error:', text); // Log the response text for debugging
-        throw new Error('Login failed'); // Throw a generic error message
+        const text = await response.text();
+        console.error('Login Error:', text);
+        throw new Error('Login failed. Please check your credentials and try again.');
       }
-  
+
       const data = await response.json();
       const { token } = data;
-      setToken(token);
+      setToken(token); // Assuming setToken is a function to set the authentication token in your application context
       console.log('Login Successful:', data);
-      // Redirect or navigate to another page after successful login
+      // Redirect or perform actions after successful login
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.');
       console.error('Login Error:', error);
@@ -44,7 +49,6 @@ const Login = ({ setToken }) => {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="login-container">
