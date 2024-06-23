@@ -1,19 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import BookList from './components/BookList';
-import Cart from './components/Cart'; // Import Cart component
-import SingleBook from './components/SingleBook';
+import ProductList from './components/ProductList'; // Rename BookList to ProductList if needed
+import Cart from './components/Cart';
+import SingleProduct from './components/SingleProduct'; // Rename SingleBook to SingleProduct if needed
 import Navigation from './components/Navigation';
 import Login from './components/Login';
 import Register from './components/Register';
 import Account from './components/Account';
 import Home from './components/Home';
-import Checkout from './components/Checkout'; // Import Checkout component
+import Checkout from './components/Checkout';
 import './index.css';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [cartItems, setCartItems] = useState([]);
+
+  // Fetch products from backend
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products'); // Update with your backend API URL
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Product Fetch Error:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleLogin = (newToken) => {
     setToken(newToken);
@@ -25,21 +44,18 @@ function App() {
     localStorage.removeItem('token');
   };
 
-  const addToCart = (book) => {
-    setCartItems((prevItems) => [...prevItems, book]);
+  const addToCart = (product) => {
+    setCartItems((prevItems) => [...prevItems, product]);
   };
 
-  const handleRemove = (bookId) => {
-    setCartItems((prevItems) => prevItems.filter(item => item.id !== bookId));
+  const handleRemove = (productId) => {
+    setCartItems((prevItems) => prevItems.filter(item => item.id !== productId));
   };
 
   const handleCheckout = (billingInfo) => {
-    // Handle checkout logic here, e.g., process payment, clear cart, etc.
     console.log('Handling checkout with:', billingInfo);
-    // Example: Clear cart after successful checkout
-    setCartItems([]);
+    setCartItems([]); // Placeholder logic to clear cart after checkout
   };
-  
 
   return (
     <div>
@@ -51,14 +67,14 @@ function App() {
       <Navigation token={token} onLogout={handleLogout} />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/books" element={<BookList addToCart={addToCart} />} />
-        <Route path="/books/:id" element={<SingleBook token={token} />} />
+        <Route path="/products" element={<ProductList products={products} addToCart={addToCart} />} />
+        <Route path="/products/:id" element={<SingleProduct token={token} />} />
         <Route path="/login" element={<Login setToken={handleLogin} />} />
         <Route path="/register" element={<Register setToken={handleLogin} />} />
         <Route path="/account" element={<Account token={token} />} />
         <Route path="/cart" element={<Cart cartItems={cartItems} handleRemove={handleRemove} />} />
         <Route path="/checkout" element={<Checkout cartItems={cartItems} handleCheckout={handleCheckout} />} />
-      </Routes>      
+      </Routes>
     </div>
   );
 }

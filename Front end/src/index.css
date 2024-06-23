@@ -68,8 +68,8 @@ body {
   text-decoration: none; /* Remove default underline */
 }
 
-/* Book List Styles */
-.book-list-container {
+/* ProductList Styles */
+.product-list-container {
   background-color: #dfd9d2;
   display: block;
   color: rgb(23, 22, 22);
@@ -83,24 +83,24 @@ body {
   perspective: 1000px;
 }
 
-.book img {
+.product img {
   max-width: 50%; /* Reduce image size */
   height: auto;
 }
 
-.book-list {
+.product-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr); 
   gap: 10px; /* Add gap between items */
 }
 
-.book {
+.product {
   border: 2px solid #0a0a0a;
   padding: 10px;
   border-spacing: 1cap;
 }
 
-.book h3 {
+.product h3 {
   border: 1px solid #b07c03;
   margin-top: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -110,19 +110,19 @@ body {
 
 /* Responsive Styles */
 @media (max-width: 1200px) {
-  .book-list {
+  .product-list {
     grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
   }
 }
 
 @media (max-width: 768px) {
-  .book-list {
+  .product-list {
     grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
   }
 }
 
 @media (max-width: 480px) {
-  .book-list {
+  .product-list {
     grid-template-columns: 1fr; /* 1 column on very small screens */
   }
 }
@@ -307,7 +307,7 @@ body {
 
 /* Home Styles */
 .home-container {
-  background-color: #ccc;
+  background-color: #d99709;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -385,7 +385,7 @@ body {
 
   /* Cart CSS*/
   .cart-container {
-    background-color: #dfd9d2;
+    background-color: #e98009;
     display: grid;
     color: rgb(23, 22, 22);
     text-align: center;
