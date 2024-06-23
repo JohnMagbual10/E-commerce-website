@@ -3,32 +3,33 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// PostgreSQL client initialization
+// PostgreSQL client initialization with SSL support for production
 const client = new Client({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
-  ssl: process.env.DATABASE_SSL ? { rejectUnauthorized: false } : false, // Adjust SSL config as needed
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false, // Use SSL in production
 });
 
-client.connect()
-  .then(() => {
-    console.log('Connected to database');
-  })
-  .catch(err => {
-    console.error('Error connecting to database:', err.message);
-    process.exit(1); // Exit process on database connection error
-  });
-
+// JWT secret setup
 const JWT_SECRET = process.env.JWT || 'shhh';
 
 if (JWT_SECRET === 'shhh') {
   console.log('Warning: If deployed, set process.env.JWT to something other than "shhh"');
 }
 
+// Connect to PostgreSQL database
+async function connectDB() {
+  try {
+    await client.connect();
+    console.log('Connected to PostgreSQL database');
+  } catch (err) {
+    console.error('Error connecting to database:', err.message);
+    throw new Error('Failed to connect to database');
+  }
+}
+
 // Function to create database tables
 async function createTables() {
   const createTablesQuery = `
-    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
     DROP TABLE IF EXISTS follows, wishlist_items, wishlists, reviews, payments, order_items, orders, product_images, coupons, products, categories, users CASCADE;
 
     CREATE TABLE IF NOT EXISTS users (
@@ -60,7 +61,6 @@ async function createTables() {
       price DECIMAL(10, 2) NOT NULL,
       stock_quantity INTEGER NOT NULL,
       category_id UUID REFERENCES categories(id),
-      image_url TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -147,6 +147,8 @@ async function createTables() {
       followed_user_id UUID REFERENCES users(id),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
   `;
 
   try {
@@ -159,262 +161,149 @@ async function createTables() {
 }
 
 // Function to create a new user
-async function createUser({ username, password, email, firstName, lastName, address, phoneNumber, isAdmin = false }) {
+async function createUser({ username, password, email, firstName, lastName, address, phoneNumber, isAdmin }) {
   const hashedPassword = await bcrypt.hash(password, 10);
   const insertUserQuery = `
     INSERT INTO users(id, username, password, email, first_name, last_name, address, phone_number, is_admin, created_at, updated_at)
     VALUES(uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     RETURNING id, username, email, first_name, last_name, address, phone_number, is_admin, created_at, updated_at
   `;
-  const values = [username, hashedPassword, email, firstName, lastName, address, phoneNumber, isAdmin];
+  const values = [
+    username,
+    hashedPassword,
+    email,
+    firstName,
+    lastName,
+    address,
+    phoneNumber,
+    isAdmin || false,
+  ];
 
-  try {
+  try { 
     const { rows } = await client.query(insertUserQuery, values);
     return rows[0];
   } catch (error) {
-    throw new Error(`Failed to create user: ${error.message}`);
+    console.error('Create user error:', error.message);
+    throw new Error('Failed to create user');
   }
 }
 
 // Function to fetch a user by username
 async function fetchUserByUsername(username) {
-  const fetchUserQuery = `
-    SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
-    FROM users
-    WHERE username = $1
-  `;
-
   try {
+    const fetchUserQuery = `
+      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+      FROM users
+      WHERE username = $1
+    `;
     const response = await client.query(fetchUserQuery, [username]);
+
     if (!response.rows.length) {
-      return null;
+      return null; // User not found
     }
-    return response.rows[0];
-  } catch (error) {
-    throw new Error(`Failed to fetch user by username: ${error.message}`);
+
+    return response.rows[0]; // Return the first row (assuming username is unique)
+  } catch (err) {
+    console.error('Fetch user by username error:', err.message);
+    throw new Error('Failed to fetch user by username');
   }
 }
 
 // Function to fetch a user by email
 async function fetchUserByEmail(email) {
-  const fetchUserQuery = `
-    SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
-    FROM users
-    WHERE email = $1
-  `;
-
   try {
+    const fetchUserQuery = `
+      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+      FROM users
+      WHERE email = $1
+    `;
     const response = await client.query(fetchUserQuery, [email]);
+
     if (!response.rows.length) {
-      return null;
+      return null; // User not found
     }
-    return response.rows[0];
-  } catch (error) {
-    throw new Error(`Failed to fetch user by email: ${error.message}`);
+
+    return response.rows[0]; // Return the first row (assuming email is unique)
+  } catch (err) {
+    console.error('Fetch user by email error:', err.message);
+    throw new Error('Failed to fetch user by email');
   }
 }
 
 // Function to find a user by username or email
 async function findUserByUsernameOrEmail(identifier) {
-  const findUserQuery = `
-    SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
-    FROM users
-    WHERE username = $1 OR email = $1
-  `;
-
   try {
+    const findUserQuery = `
+      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+      FROM users
+      WHERE username = $1 OR email = $1
+    `;
     const response = await client.query(findUserQuery, [identifier]);
+
     if (!response.rows.length) {
-      return null;
+      return null; // User not found
     }
-    return response.rows[0];
-  } catch (error) {
-    throw new Error(`Failed to find user by username or email: ${error.message}`);
+
+    return response.rows[0]; // Return the first row (assuming username or email is unique)
+  } catch (err) {
+    console.error('Find user by username or email error:', err.message);
+    throw new Error('Failed to find user by username or email');
   }
 }
 
-// Function to authenticate a user
-async function authenticate({ username, password }) {
-  const findUserQuery = `
-    SELECT id, username, password
-    FROM users
-    WHERE username = $1
-  `;
+// Authentication function
+async function authenticate(username, password) {
+  const user = await User.findOne({ username });
 
-  try {
-    const response = await client.query(findUserQuery, [username]);
-    if (!response.rows.length) {
-      throw new Error('Invalid credentials');
-    }
-    const match = await bcrypt.compare(password, response.rows[0].password);
-    if (!match) {
-      throw new Error('Invalid credentials');
-    }
-    const token = jwt.sign({ id: response.rows[0].id }, JWT_SECRET, { expiresIn: '1h' });
-    return { token };
-  } catch (error) {
-    throw new Error(`Authentication failed: ${error.message}`);
+  if (!user || !user.comparePassword(password)) { // comparePassword should handle password hashing comparison
+    throw new Error('Invalid credentials');
   }
+
+  return user; // Return user object if authentication is successful
 }
 
-// Function to find a user with a given token
+// Function to find a user with token
 async function findUserWithToken(token) {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     const userId = payload.id;
 
-    const findUserQuery = `
-      SELECT id, username
-      FROM users
-      WHERE id = $1
-    `;
+    const findUserQuery = 'SELECT id, username FROM users WHERE id=$1';
     const response = await client.query(findUserQuery, [userId]);
+
     if (!response.rows.length) {
-      throw new Error('User not found');
+      throw new Error('User not found'); // Token is valid, but no user found
     }
-    return response.rows[0];
-  } catch (error) {
-    throw new Error(`Failed to find user with token: ${error.message}`);
+
+    return response.rows[0]; // Return the first row (assuming user ID is unique)
+  } catch (err) {
+    console.error('Find user with token error:', err.message);
+    throw new Error('Failed to find user with token');
   }
 }
 
-// Function to create a new product
-async function createProduct({ name, description, price, stockQuantity, categoryId }) {
-  const insertProductQuery = `
-    INSERT INTO products(id, name, description, price, stock_quantity, category_id, created_at, updated_at)
-    VALUES(uuid_generate_v4(), $1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    RETURNING id, name, description, price, stock_quantity, category_id, created_at, updated_at
-  `;
-  const values = [name, description, price, stockQuantity, categoryId];
-
-  try {
-    const { rows } = await client.query(insertProductQuery, values);
-    return rows[0];
-  } catch (error) {
-    throw new Error(`Failed to create product: ${error.message}`);
-  }
-}
-
-// Function to fetch all products
-async function fetchProducts() {
-  const fetchProductsQuery = `
-    SELECT id, name, description, price, stock_quantity, category_id, created_at, updated_at
-    FROM products
+// Function to fetch user by ID
+async function fetchUserById(userId) {
+  const query = `
+    SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
+    FROM users
+    WHERE id = $1;
   `;
 
   try {
-    const { rows } = await client.query(fetchProductsQuery);
-    return rows;
-  } catch (error) {
-    throw new Error(`Failed to fetch products: ${error.message}`);
-  }
-}
-
-// Function to fetch a product by ID
-async function fetchProductById(productId) {
-  const fetchProductQuery = `
-    SELECT id, name, description, price, stock_quantity, category_id, created_at, updated_at
-    FROM products
-    WHERE id = $1
-  `;
-
-  try {
-    const response = await client.query(fetchProductQuery, [productId]);
-    if (!response.rows.length) {
-      return null;
-    }
-    return response.rows[0];
-  } catch (error) {
-    throw new Error(`Failed to fetch product by ID: ${error.message}`);
-  }
-}
-
-// Function to update a product
-async function updateProduct({ id, name, description, price, stockQuantity, categoryId }) {
-  const updateProductQuery = `
-    UPDATE products
-    SET name = $1, description = $2, price = $3, stock_quantity = $4, category_id = $5, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $6
-    RETURNING id, name, description, price, stock_quantity, category_id, created_at, updated_at
-  `;
-  const values = [name, description, price, stockQuantity, categoryId, id];
-
-  try {
-    const { rows } = await client.query(updateProductQuery, values);
-    if (!rows.length) {
-      return null;
-    }
-    return rows[0];
-  } catch (error) {
-    throw new Error(`Failed to update product: ${error.message}`);
-  }
-}
-
-// Function to delete a product
-async function deleteProduct(productId) {
-  const deleteProductQuery = `
-    DELETE FROM products
-    WHERE id = $1
-    RETURNING id, name
-  `;
-
-  try {
-    const { rows } = await client.query(deleteProductQuery, [productId]);
-    if (!rows.length) {
-      return null;
-    }
-    return rows[0];
-  } catch (error) {
-    throw new Error(`Failed to delete product: ${error.message}`);
-  }
-}
-
-// Function to insert dummy products into the database
-async function dummyProducts(count = 10) {
-  const insertProductQuery = `
-    INSERT INTO products(id, name, description, price, stock_quantity, category_id, created_at, updated_at)
-    VALUES($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    RETURNING *;
-  `;
-
-  const categoryIds = await fetchCategoryIds(); // Fetch category IDs from the database
-
-  // Generate dummy data
-  const dummyData = Array.from({ length: count }).map(() => {
-    return [
-      uuidv4(),  // Product ID
-      `Product ${Math.random().toString(36).substring(7)}`,  // Random name
-      'This is a dummy product description',  // Description
-      (Math.random() * 100).toFixed(2),  // Random price
-      Math.floor(Math.random() * 1000),  // Random stock quantity
-      categoryIds[Math.floor(Math.random() * categoryIds.length)]  // Random category ID
-    ];
-  });
-
-  try {
-    const result = [];
-    for (const values of dummyData) {
-      const { rows } = await client.query(insertProductQuery, values);
-      result.push(rows[0]);
-    }
-    return result;
-  } catch (error) {
-    throw new Error(`Failed to insert dummy products: ${error.message}`);
-  }
-}
-
-// Helper function to fetch category IDs
-async function fetchCategoryIds() {
-  const fetchCategoriesQuery = 'SELECT id FROM categories';
-  try {
-    const result = await client.query(fetchCategoriesQuery);
-    return result.rows.map(row => row.id);
-  } catch (error) {
-    throw new Error(`Failed to fetch category IDs: ${error.message}`);
+    const { rows } = await client.query(query, [userId]);
+    const user = rows[0];
+    return user;
+  } catch (err) {
+    console.error('Error fetching user by ID:', err.message);
+    throw new Error('Failed to fetch user by ID');
   }
 }
 
 module.exports = {
+  client,
+  authenticate,
+  connectDB,
   createTables,
   createUser,
   fetchUserByUsername,
@@ -422,11 +311,5 @@ module.exports = {
   findUserByUsernameOrEmail,
   authenticate,
   findUserWithToken,
-  createProduct,
-  fetchProducts,
-  fetchProductById,
-  updateProduct,
-  deleteProduct,
-  dummyProducts,
-  client,
+  fetchUserById,
 };
