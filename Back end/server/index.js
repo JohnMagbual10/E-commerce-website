@@ -13,6 +13,7 @@ const wishlistItemRoutes = require('../routes/wishlistItems');
 const couponRoutes = require('../routes/coupons');
 const productImageRoutes = require('../routes/productImages');
 const followRoutes = require('../routes/follows');
+const { createTables, client } = require('./db');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,12 +22,6 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // PostgreSQL Client initialization
-const client = new Client({
-  connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
-  ssl: process.env.DATABASE_SSL ? { rejectUnauthorized: false } : false, // Adjust SSL config as needed
-});
-
-// Connect to PostgreSQL database
 client.connect()
   .then(() => {
     console.log('Connected to database');
@@ -39,6 +34,16 @@ client.connect()
 
 // Registering routes and starting server
 function startServer() {
+  // Create database tables if not exists
+  createTables()
+    .then(() => {
+      console.log('Tables created');
+    })
+    .catch(err => {
+      console.error('Error creating tables:', err.message);
+      process.exit(1); // Exit process on database creation error
+    });
+
   // Register routes
   app.use('/api/auth', authRoutes);
   app.use('/api/users', userRoutes);

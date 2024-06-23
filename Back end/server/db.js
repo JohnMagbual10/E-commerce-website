@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 // PostgreSQL client initialization
 const client = new Client({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
+  ssl: process.env.DATABASE_SSL ? { rejectUnauthorized: false } : false, // Adjust SSL config as needed
 });
 
 client.connect()
@@ -13,7 +14,8 @@ client.connect()
     console.log('Connected to database');
   })
   .catch(err => {
-    console.error('Error connecting to database:', err);
+    console.error('Error connecting to database:', err.message);
+    process.exit(1); // Exit process on database connection error
   });
 
 const JWT_SECRET = process.env.JWT || 'shhh';
@@ -58,6 +60,7 @@ async function createTables() {
       price DECIMAL(10, 2) NOT NULL,
       stock_quantity INTEGER NOT NULL,
       category_id UUID REFERENCES categories(id),
+      image_url TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -279,73 +282,141 @@ async function findUserWithToken(token) {
 async function createProduct({ name, description, price, stockQuantity, categoryId }) {
   const insertProductQuery = `
     INSERT INTO products(id, name, description, price, stock_quantity, category_id, created_at, updated_at)
-    VALUES($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    RETURNING *
+    VALUES(uuid_generate_v4(), $1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    RETURNING id, name, description, price, stock_quantity, category_id, created_at, updated_at
   `;
-  const values = [uuidv4(), name, description, price, stockQuantity, categoryId];
+  const values = [name, description, price, stockQuantity, categoryId];
 
   try {
-    const result = await client.query(insertProductQuery, values);
-    return result.rows[0];
+    const { rows } = await client.query(insertProductQuery, values);
+    return rows[0];
   } catch (error) {
     throw new Error(`Failed to create product: ${error.message}`);
-  }
-}
-
-// Function to fetch all users
-async function fetchUsers() {
-  const fetchUsersQuery = `
-    SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
-    FROM users
-  `;
-
-  try {
-    const response = await client.query(fetchUsersQuery);
-    return response.rows;
-  } catch (error) {
-    throw new Error(`Failed to fetch users: ${error.message}`);
-  }
-}
-
-// Function to fetch user details by ID
-async function fetchUserById(userId) {
-  const fetchUserQuery = `
-    SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
-    FROM users
-    WHERE id = $1
-  `;
-
-  try {
-    const response = await client.query(fetchUserQuery, [userId]);
-    if (!response.rows.length) {
-      return null;
-    }
-    return response.rows[0];
-  } catch (error) {
-    throw new Error(`Failed to fetch user by ID: ${error.message}`);
   }
 }
 
 // Function to fetch all products
 async function fetchProducts() {
   const fetchProductsQuery = `
-    SELECT *
+    SELECT id, name, description, price, stock_quantity, category_id, created_at, updated_at
     FROM products
   `;
 
   try {
-    const response = await client.query(fetchProductsQuery);
-    return response.rows;
+    const { rows } = await client.query(fetchProductsQuery);
+    return rows;
   } catch (error) {
     throw new Error(`Failed to fetch products: ${error.message}`);
+  }
+}
+
+// Function to fetch a product by ID
+async function fetchProductById(productId) {
+  const fetchProductQuery = `
+    SELECT id, name, description, price, stock_quantity, category_id, created_at, updated_at
+    FROM products
+    WHERE id = $1
+  `;
+
+  try {
+    const response = await client.query(fetchProductQuery, [productId]);
+    if (!response.rows.length) {
+      return null;
+    }
+    return response.rows[0];
+  } catch (error) {
+    throw new Error(`Failed to fetch product by ID: ${error.message}`);
+  }
+}
+
+// Function to update a product
+async function updateProduct({ id, name, description, price, stockQuantity, categoryId }) {
+  const updateProductQuery = `
+    UPDATE products
+    SET name = $1, description = $2, price = $3, stock_quantity = $4, category_id = $5, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $6
+    RETURNING id, name, description, price, stock_quantity, category_id, created_at, updated_at
+  `;
+  const values = [name, description, price, stockQuantity, categoryId, id];
+
+  try {
+    const { rows } = await client.query(updateProductQuery, values);
+    if (!rows.length) {
+      return null;
+    }
+    return rows[0];
+  } catch (error) {
+    throw new Error(`Failed to update product: ${error.message}`);
+  }
+}
+
+// Function to delete a product
+async function deleteProduct(productId) {
+  const deleteProductQuery = `
+    DELETE FROM products
+    WHERE id = $1
+    RETURNING id, name
+  `;
+
+  try {
+    const { rows } = await client.query(deleteProductQuery, [productId]);
+    if (!rows.length) {
+      return null;
+    }
+    return rows[0];
+  } catch (error) {
+    throw new Error(`Failed to delete product: ${error.message}`);
+  }
+}
+
+// Function to insert dummy products into the database
+async function dummyProducts(count = 10) {
+  const insertProductQuery = `
+    INSERT INTO products(id, name, description, price, stock_quantity, category_id, created_at, updated_at)
+    VALUES($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    RETURNING *;
+  `;
+
+  const categoryIds = await fetchCategoryIds(); // Fetch category IDs from the database
+
+  // Generate dummy data
+  const dummyData = Array.from({ length: count }).map(() => {
+    return [
+      uuidv4(),  // Product ID
+      `Product ${Math.random().toString(36).substring(7)}`,  // Random name
+      'This is a dummy product description',  // Description
+      (Math.random() * 100).toFixed(2),  // Random price
+      Math.floor(Math.random() * 1000),  // Random stock quantity
+      categoryIds[Math.floor(Math.random() * categoryIds.length)]  // Random category ID
+    ];
+  });
+
+  try {
+    const result = [];
+    for (const values of dummyData) {
+      const { rows } = await client.query(insertProductQuery, values);
+      result.push(rows[0]);
+    }
+    return result;
+  } catch (error) {
+    throw new Error(`Failed to insert dummy products: ${error.message}`);
+  }
+}
+
+// Helper function to fetch category IDs
+async function fetchCategoryIds() {
+  const fetchCategoriesQuery = 'SELECT id FROM categories';
+  try {
+    const result = await client.query(fetchCategoriesQuery);
+    return result.rows.map(row => row.id);
+  } catch (error) {
+    throw new Error(`Failed to fetch category IDs: ${error.message}`);
   }
 }
 
 module.exports = {
   createTables,
   createUser,
-  fetchUsers,
-  fetchUserById,
   fetchUserByUsername,
   fetchUserByEmail,
   findUserByUsernameOrEmail,
@@ -353,4 +424,9 @@ module.exports = {
   findUserWithToken,
   createProduct,
   fetchProducts,
+  fetchProductById,
+  updateProduct,
+  deleteProduct,
+  dummyProducts,
+  client,
 };
