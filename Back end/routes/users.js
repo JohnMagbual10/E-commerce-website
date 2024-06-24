@@ -1,61 +1,53 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, fetchUsers, fetchFavorites, createFavorite, destroyFavorite } = require('../server/db');
+const { createUser, fetchUsers, fetchFavorites, createFavorite, destroyFavorite, fetchUserByUsername } = require('../server/db'); // Include fetchUserByUsername
 const verifyTokenMiddleware = require('../middlewares/verifyToken');
 
-// POST route to create a new user
 router.post('/', async (req, res, next) => {
-    const { username, password, email, firstName, lastName, address, phoneNumber, isAdmin } = req.body;
-    console.log(req.body); // Log the request body to check received data
-
     try {
-        const newUser = await createUser({ username, password, email, firstName, lastName, address, phoneNumber, isAdmin });
+        const { username, password } = req.body;
+        const existingUser = await fetchUserByUsername(username); // Use fetchUserByUsername from db
+        if (existingUser) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+        const newUser = await createUser({ username, password }); // Use createUser from db
         res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error creating user:', error.message);
-        res.status(500).json({ error: 'Failed to create user' });
+        next(error);
     }
 });
 
-// GET route to fetch all users
 router.get('/', async (req, res, next) => {
-  try {
-    const users = await fetchUsers();
-    res.status(200).json(users);
-  } catch (ex) {
-    next(ex); // Pass error to Express error handler
-  }
+    try {
+        res.send(await fetchUsers());
+    } catch (ex) {
+        next(ex);
+    }
 });
 
-// GET route to fetch user favorites by user id
 router.get('/:id/favorites', async (req, res, next) => {
-  try {
-    const favorites = await fetchFavorites(req.params.id);
-    res.status(200).json(favorites);
-  } catch (ex) {
-    next(ex); // Pass error to Express error handler
-  }
+    try {
+        res.send(await fetchFavorites(req.params.id));
+    } catch (ex) {
+        next(ex);
+    }
 });
 
-// POST route to create a favorite product for a user
 router.post('/:id/favorites', verifyTokenMiddleware, async (req, res, next) => {
-  try {
-    const { product_id } = req.body;
-    const favorite = await createFavorite({ userId: req.params.id, productId: product_id });
-    res.status(201).json(favorite);
-  } catch (ex) {
-    next(ex); // Pass error to Express error handler
-  }
+    try {
+        res.status(201).send(await createFavorite({ userId: req.params.id, productId: req.body.product_id })); // Adjust the object property names to userId and productId
+    } catch (ex) {
+        next(ex);
+    }
 });
 
-// DELETE route to remove a favorite product for a user
 router.delete('/:user_id/favorites/:id', async (req, res, next) => {
-  try {
-    await destroyFavorite({ userId: req.params.user_id, productId: req.params.id });
-    res.sendStatus(204);
-  } catch (ex) {
-    next(ex); // Pass error to Express error handler
-  }
+    try {
+        await destroyFavorite({ userId: req.params.user_id, productId: req.params.id }); // Adjust the object property names to userId and productId
+        res.sendStatus(204);
+    } catch (ex) {
+        next(ex);
+    }
 });
 
 module.exports = router;
