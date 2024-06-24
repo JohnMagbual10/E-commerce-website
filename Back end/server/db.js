@@ -1,13 +1,26 @@
 const { Client } = require('pg');
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid'); // Ensure this is used
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // PostgreSQL client initialization with SSL support for production
 const client = new Client({
   connectionString: process.env.DATABASE_URL || 'postgres://localhost/acme_auth_store_db',
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false, // Use SSL in production
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
+
+async function connectDB() {
+  try {
+    await client.connect();
+    console.log('Connected to main database');
+    
+    await client2.connect();
+    console.log('Connected to secondary database');
+  } catch (err) {
+    console.error('Error connecting to database:', err.message);
+    throw new Error('Failed to connect to database');
+  }
+}
 
 // JWT secret setup
 const JWT_SECRET = process.env.JWT || 'shhh';
@@ -30,6 +43,8 @@ async function connectDB() {
 // Function to create database tables
 async function createTables() {
   const createTablesQuery = `
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
     DROP TABLE IF EXISTS follows, wishlist_items, wishlists, reviews, payments, order_items, orders, product_images, coupons, products, categories, users CASCADE;
 
     CREATE TABLE IF NOT EXISTS users (
@@ -147,8 +162,6 @@ async function createTables() {
       followed_user_id UUID REFERENCES users(id),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-
-    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
   `;
 
   try {
@@ -162,13 +175,17 @@ async function createTables() {
 
 // Function to create a new user
 async function createUser({ username, password, email, firstName, lastName, address, phoneNumber, isAdmin }) {
+  const userId = uuidv4(); // Generate a unique ID for the user
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const insertUserQuery = `
     INSERT INTO users(id, username, password, email, first_name, last_name, address, phone_number, is_admin, created_at, updated_at)
-    VALUES(uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     RETURNING id, username, email, first_name, last_name, address, phone_number, is_admin, created_at, updated_at
   `;
+
   const values = [
+    userId,
     username,
     hashedPassword,
     email,
@@ -179,7 +196,7 @@ async function createUser({ username, password, email, firstName, lastName, addr
     isAdmin || false,
   ];
 
-  try { 
+  try {
     const { rows } = await client.query(insertUserQuery, values);
     return rows[0];
   } catch (error) {
@@ -188,6 +205,48 @@ async function createUser({ username, password, email, firstName, lastName, addr
   }
 }
 
+// Function to authenticate a user
+async function authenticate(username, password) {
+  try {
+    const user = await fetchUserByUsername(username);
+    if (!user) {
+      throw new Error('Invalid credentials');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error('Invalid credentials');
+    }
+
+    const token = jwt.sign({ id: user.id, username: user.username, isAdmin: user.is_admin }, JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    return { token, user: { id: user.id, username: user.username, isAdmin: user.is_admin } };
+  } catch (err) {
+    console.error('Authentication error:', err.message);
+    throw new Error('Failed to authenticate');
+  }
+}
+
+// Function to find a user by their token
+async function findUserWithToken(token) {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await fetchUserById(decoded.id);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user;
+  } catch (err) {
+    console.error('Find user by token error:', err.message);
+    throw new Error('Failed to find user by token');
+  }
+}
+
+// Function to fetch all users
 async function fetchUsers() {
   try {
     const query = 'SELECT id, username, email FROM users';
@@ -198,7 +257,6 @@ async function fetchUsers() {
     throw new Error('Failed to fetch users');
   }
 }
-
 
 // Function to fetch a user by username
 async function fetchUserByUsername(username) {
@@ -242,87 +300,36 @@ async function fetchUserByEmail(email) {
   }
 }
 
-// Function to find a user by username or email
-async function findUserByUsernameOrEmail(identifier) {
+// Function to fetch a user by ID
+async function fetchUserById(userId) {
   try {
-    const findUserQuery = `
-      SELECT id, username, password, email, first_name, last_name, address, phone_number, is_admin
+    const fetchUserQuery = `
+      SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
       FROM users
-      WHERE username = $1 OR email = $1
+      WHERE id = $1
     `;
-    const response = await client.query(findUserQuery, [identifier]);
+    const response = await client.query(fetchUserQuery, [userId]);
 
     if (!response.rows.length) {
       return null; // User not found
     }
 
-    return response.rows[0]; // Return the first row (assuming username or email is unique)
+    return response.rows[0]; // Return the first row (assuming ID is unique)
   } catch (err) {
-    console.error('Find user by username or email error:', err.message);
-    throw new Error('Failed to find user by username or email');
-  }
-}
-
-// Authentication function
-async function authenticate(username, password) {
-  const user = await User.findOne({ username });
-
-  if (!user || !user.comparePassword(password)) { // comparePassword should handle password hashing comparison
-    throw new Error('Invalid credentials');
-  }
-
-  return user; // Return user object if authentication is successful
-}
-
-// Function to find a user with token
-async function findUserWithToken(token) {
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    const userId = payload.id;
-
-    const findUserQuery = 'SELECT id, username FROM users WHERE id=$1';
-    const response = await client.query(findUserQuery, [userId]);
-
-    if (!response.rows.length) {
-      throw new Error('User not found'); // Token is valid, but no user found
-    }
-
-    return response.rows[0]; // Return the first row (assuming user ID is unique)
-  } catch (err) {
-    console.error('Find user with token error:', err.message);
-    throw new Error('Failed to find user with token');
-  }
-}
-
-// Function to fetch user by ID
-async function fetchUserById(userId) {
-  const query = `
-    SELECT id, username, email, first_name, last_name, address, phone_number, is_admin
-    FROM users
-    WHERE id = $1;
-  `;
-
-  try {
-    const { rows } = await client.query(query, [userId]);
-    const user = rows[0];
-    return user;
-  } catch (err) {
-    console.error('Error fetching user by ID:', err.message);
+    console.error('Fetch user by ID error:', err.message);
     throw new Error('Failed to fetch user by ID');
   }
 }
 
 module.exports = {
   client,
-  authenticate,
   connectDB,
   createTables,
   createUser,
+  authenticate,
+  findUserWithToken,
   fetchUsers,
   fetchUserByUsername,
   fetchUserByEmail,
-  findUserByUsernameOrEmail,
-  authenticate,
-  findUserWithToken,
   fetchUserById,
 };

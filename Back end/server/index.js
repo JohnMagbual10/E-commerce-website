@@ -16,7 +16,8 @@ const followRoutes = require('../routes/follows'); // Adjust path based on your 
 
 const app = express();
 const port = process.env.PORT || 3000;
-// Middleware and routes setup
+
+// Middleware setup
 app.use(express.json());
 
 // Registering routes
@@ -33,17 +34,22 @@ app.use('/api/wishlist-items', wishlistItemRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/product-images', productImageRoutes);
 app.use('/api/follows', followRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the full error stack trace
+    console.error('Error stack:', err.stack); // Log the full error stack trace
     res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
 });
-// Initialize server and database connection
+
+// Initialization function to connect to the database and start the server
 const init = async () => {
     try {
-        await client.connect(); // Connect to the database
-        console.log('Connected to database');
-        await createTables(); // Ensure tables are created or migrated
+        // Connect to the database
+        await client.connect();
+        console.log('Connected to the database');
+
+        // Create tables if they don't exist
+        await createTables();
         console.log('Tables created');
 
         // Start the Express server
@@ -64,4 +70,5 @@ const init = async () => {
     }
 };
 
-init(); // Call the initialization function to start the server
+// Call the initialization function to start the server
+init();
