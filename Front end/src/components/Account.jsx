@@ -43,7 +43,7 @@ const Account = ({ token }) => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/auth/logout', {
+      const response = await fetch('api/auth/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
