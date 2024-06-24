@@ -68,6 +68,8 @@ const Account = ({ token }) => {
     }
   };
 
+  
+
   return (
     <div className="account-container">
       <h2 className="account-title">Account</h2>

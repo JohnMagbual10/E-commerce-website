@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const Login = ({ setToken }) => {
   const [formData, setFormData] = useState({
     username: '',
-    password: '',
+    password: ''
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -39,41 +39,19 @@ const Login = ({ setToken }) => {
 
       const data = await response.json();
       const { token } = data;
+
+      // Store the token in localStorage
+      localStorage.setItem('token', token);
+
       setToken(token); // Set the token received from the server
       console.log('Login Successful:', data);
-      // Redirect or navigate to another page after successful login
-      // Example: history.push('/dashboard');
+      // Example: Fetch user profile after successful login
+      fetchUserProfile(token);
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.');
       console.error('Login Error:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error('Logout request failed');
-      }
-  
-      // Clear token from client-side storage
-      localStorage.removeItem('token');
-      setToken(null); // Update state to reflect logout
-  
-      // Redirect or update UI as needed after successful logout
-      history.push('/login'); // Example: Redirect to login page
-    } catch (error) {
-      console.error('Logout Error:', error.message);
-      // Handle error state or display error message to the user
     }
   };
 
