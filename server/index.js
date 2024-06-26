@@ -1,9 +1,15 @@
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 const express = require('express');
-const app = express();
 const { connectDB } = require('./db');
+const app = express();
+
+console.log('Environment Variables:', process.env);
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const DATABASE_URL = process.env.DATABASE_URL;
+
+console.log('JWT_SECRET:', JWT_SECRET);
+console.log('DATABASE_URL:', DATABASE_URL);
 
 if (!JWT_SECRET) {
   console.error('JWT_SECRET is not set in environment variables');
@@ -12,10 +18,14 @@ if (!JWT_SECRET) {
 
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', require('../routes/auth'));
+console.log('Auth routes loaded');
 app.use('/api/products', require('../routes/products'));
+console.log('Product routes loaded');
 app.use('/api/users', require('../routes/users'));
+console.log('User routes loaded');
+app.use('/api/cart', require('../routes/cart'));
+console.log('Cart routes loaded');
 
 const PORT = process.env.PORT || 3000;
 
