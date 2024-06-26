@@ -43,32 +43,31 @@ const Account = ({ token }) => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('api/auth/logout', {
+      const response = await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}` // Ensure token is correctly passed
         }
       });
-  
+
       if (!response.ok) {
         throw new Error('Logout request failed');
       }
-  
+
       // Clear user data and token from local storage or state
       setUserData(null); // Clear user data
       localStorage.removeItem('token'); // Clear token from local storage
-  
+
       // Optionally redirect to login page or perform any additional cleanup
-      history.push('/login'); // Example: Redirect to login page using React Router
-  
+      // Example: Redirect to login page using React Router
+      window.location.href = '/login';
+
     } catch (error) {
       console.error('Logout Error:', error.message);
       // Handle logout error (optional)
     }
   };
-
-  
 
   return (
     <div className="account-container">

@@ -10,7 +10,7 @@ const SingleBook = () => {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await fetch(`https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books/${id}`, {
+        const response = await fetch(`/products/:id`, {
           headers: {
             'Content-Type': 'application/json',
           },

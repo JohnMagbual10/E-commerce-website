@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const Login = ({ setToken }) => {
   const [formData, setFormData] = useState({
     username: '',
-    password: ''
+    password: '',
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,6 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
     try {
       const response = await fetch('api/auth/login', {
         method: 'POST',
@@ -25,30 +24,21 @@ const Login = ({ setToken }) => {
         },
         body: JSON.stringify(formData),
       });
-
       if (!response.ok) {
-        const text = await response.text(); // Get the response text
-        console.error('Login Error:', text); // Log the response text for debugging
-
-        if (response.status === 401) {
-          throw new Error('Invalid username or password');
-        } else {
-          throw new Error('Login failed'); // Throw a generic error message
-        }
+        throw new Error('Login failed');
       }
-
       const data = await response.json();
       const { token } = data;
-
-      // Store the token in localStorage
-      localStorage.setItem('token', token);
-
-      setToken(token); // Set the token received from the server
-      console.log('Login Successful:', data);
-      // Example: Fetch user profile after successful login
-      fetchUserProfile(token);
+      setToken(token);
+      setError(null);
+      console.log('Login successful');
+      console.log('Token:', token);
+      setFormData({ // Reset form fields after successful login
+        username: '',
+        password: ''
+      });
     } catch (error) {
-      setError(error.message || 'Login failed. Please try again.');
+      setError('Login failed. Please check your credentials.');
       console.error('Login Error:', error);
     } finally {
       setLoading(false);
