@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setToken }) => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,9 +19,7 @@ const Login = ({ setToken }) => {
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -33,6 +33,8 @@ const Login = ({ setToken }) => {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       setError(null);
+      console.log('Login successful');
+      navigate('/');  // Redirect to home page or admin dashboard if required
     } catch (error) {
       setError('Login failed. Please check your credentials.');
       console.error('Login Error:', error);
@@ -64,7 +66,7 @@ const Login = ({ setToken }) => {
           className="login-input"
         />
         <button type="submit" disabled={loading} className="login-button">
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Login'}
         </button>
         {error && <p className="login-error">{error}</p>}
       </form>

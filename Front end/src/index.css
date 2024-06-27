@@ -66,8 +66,9 @@ body {
   text-decoration: none; /* Remove default underline */
 }
 
-/* ProductList Styles */
-.product-list-container {
+/* ProductList and AdminProduct Styles */
+.product-list-container,
+.admin-product-list-container {
   background-color: #dfd9d2;
   display: block;
   color: rgb(23, 22, 22);
@@ -81,24 +82,28 @@ body {
   perspective: 1000px;
 }
 
-.product img {
+.product img,
+.admin-product img {
   max-width: 50%; /* Reduce image size */
   height: auto;
 }
 
-.product-list {
+.product-list,
+.admin-product-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr); 
   gap: 10px; /* Add gap between items */
 }
 
-.product {
+.product,
+.admin-product {
   border: 2px solid #0a0a0a;
   padding: 10px;
   border-spacing: 1cap;
 }
 
-.product h3 {
+.product h3,
+.admin-product h3 {
   border: 1px solid #b07c03;
   margin-top: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -136,7 +141,8 @@ body {
 
 /* Infinite Scrolling for Cart and Checkout */
 .cart-container,
-.checkout-container {
+.checkout-container,
+.admin-container {
   display: flex;
   flex-direction: column;
   max-width: 960px;
@@ -150,7 +156,8 @@ body {
 }
 
 .cart-title,
-.checkout-title {
+.checkout-title,
+.admin-title {
   border: 1px solid #d18f0c;
   text-align: center;
   margin-bottom: 20px;
@@ -161,7 +168,8 @@ body {
 }
 
 .cart-items,
-.checkout-items {
+.checkout-items,
+.admin-list {
   list-style: none;
   padding: 0;
   margin-bottom: 20px;
@@ -170,7 +178,8 @@ body {
 }
 
 .cart-item,
-.checkout-item {
+.checkout-item,
+.admin-item {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
@@ -178,12 +187,14 @@ body {
 }
 
 .cart-info p,
-.checkout-info p {
+.checkout-info p,
+.admin-info p {
   margin-bottom: 10px;
 }
 
 .cart-checkout-button,
-.checkout-button {
+.checkout-button,
+.admin-button {
   padding: 10px 20px;
   background-color: #7700ff;
   color: #171616;
@@ -194,7 +205,8 @@ body {
 }
 
 .cart-checkout-button:hover,
-.checkout-button:hover {
+.checkout-button:hover,
+.admin-button:hover {
   background-color: #0056b3;
 }
 
@@ -313,62 +325,22 @@ body {
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-  .product-list {
+  .product-list,
+  .admin-product-list {
     grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
   }
 }
 
 @media (max-width: 768px) {
-  .product-list {
+  .product-list,
+  .admin-product-list {
     grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
   }
 }
 
 @media (max-width: 480px) {
-  .product-list {
+  .product-list,
+  .admin-product-list {
     grid-template-columns: 1fr; /* 1 column on very small screens */
   }
-}
-
-/* Account Info Styles */
-.account-container {
-  display: center;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #ebece5;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.account-title {
-  border: 1px solid #d18f0c;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #5a07ea;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  transform: rotateY(-10deg) rotateX(10deg);
-  perspective: 1000px;
-}
-
-.account-info {
-  margin-bottom: 20px;
-}
-
-.account-info p {
-  margin-bottom: 10px;
-}
-
-.account-button {
-  padding: 10px 20px;
-  background-color: #7700ff;
-  color: #171616;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.account-button:hover {
-  background-color: #0056b3;
 }
