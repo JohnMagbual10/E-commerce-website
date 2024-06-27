@@ -25,8 +25,11 @@ const Checkout = ({ cartItems, handleCheckout }) => {
     setLoading(true);
     setError(null);
     try {
+<<<<<<< HEAD
       // Here you would perform any necessary validations and then call handleCheckout
       // For the sake of example, let's assume direct call to handleCheckout
+=======
+>>>>>>> 008859a (update account component)
       await handleCheckout(billingInfo);
       console.log('Checkout successful!'); // Log success message
     } catch (error) {
@@ -40,6 +43,19 @@ const Checkout = ({ cartItems, handleCheckout }) => {
   return (
     <div className="checkout-container">
       <h2 className="checkout-title">Checkout</h2>
+<<<<<<< HEAD
+=======
+      <ul className="checkout-items">
+        {cartItems.map((item) => (
+          <li key={item.product_id} className="checkout-item">
+            <h3>{item.name}</h3>
+            <p>Price: ${Number(item.price).toFixed(2)}</p>
+            <p>Quantity: {item.quantity}</p>
+            <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
+          </li>
+        ))}
+      </ul>
+>>>>>>> 008859a (update account component)
       <form onSubmit={handleSubmit} className="checkout-form">
         <input
           type="text"
@@ -116,7 +132,11 @@ const Checkout = ({ cartItems, handleCheckout }) => {
         <input
           type="text"
           name="expiryDate"
+<<<<<<< HEAD
           placeholder="Expiry Date"
+=======
+          placeholder="Expiry Date (MM/YY)"
+>>>>>>> 008859a (update account component)
           value={billingInfo.expiryDate}
           onChange={handleChange}
           required

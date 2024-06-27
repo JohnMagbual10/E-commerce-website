@@ -9,7 +9,11 @@ const ProductList = ({ addToCart }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+<<<<<<< HEAD
         const response = await fetch('/api/products/dummyproducts'); // Update with your backend API endpoint for products
+=======
+        const response = await fetch('/api/products');
+>>>>>>> 008859a (update account component)
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
@@ -52,7 +56,11 @@ const ProductList = ({ addToCart }) => {
               className="add-to-cart-button"
               disabled={product.stock_quantity === 0}
             >
+<<<<<<< HEAD
               Add to Cart
+=======
+              {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+>>>>>>> 008859a (update account component)
             </button>
           </li>
         ))}

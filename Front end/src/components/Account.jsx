@@ -14,7 +14,11 @@ const Account = ({ token }) => {
       }
 
       try {
+<<<<<<< HEAD
         const response = await fetch(`/api/users`, {
+=======
+        const response = await fetch(`/api/users/me`, {
+>>>>>>> 008859a (update account component)
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -26,10 +30,14 @@ const Account = ({ token }) => {
         }
 
         const data = await response.json();
+<<<<<<< HEAD
         if (!Array.isArray(data) || data.length === 0) {
           throw new Error('No user data found');
         }
         setUserData(data[0]); // Assuming you expect a single user object based on the provided example
+=======
+        setUserData(data);
+>>>>>>> 008859a (update account component)
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -47,7 +55,11 @@ const Account = ({ token }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+<<<<<<< HEAD
           Authorization: `Bearer ${token}` // Ensure token is correctly passed
+=======
+          Authorization: `Bearer ${token}`
+>>>>>>> 008859a (update account component)
         }
       });
 
@@ -55,6 +67,7 @@ const Account = ({ token }) => {
         throw new Error('Logout request failed');
       }
 
+<<<<<<< HEAD
       // Clear user data and token from local storage or state
       setUserData(null); // Clear user data
       localStorage.removeItem('token'); // Clear token from local storage
@@ -66,6 +79,13 @@ const Account = ({ token }) => {
     } catch (error) {
       console.error('Logout Error:', error.message);
       // Handle logout error (optional)
+=======
+      setUserData(null);
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout Error:', error.message);
+>>>>>>> 008859a (update account component)
     }
   };
 
@@ -83,6 +103,7 @@ const Account = ({ token }) => {
           <p className="account-info">Address: {userData.address}</p>
           <p className="account-info">Phone Number: {userData.phone_number}</p>
           <p className="account-info">Admin: {userData.is_admin ? 'Yes' : 'No'}</p>
+<<<<<<< HEAD
           <p className="account-info">Camping and Hiking Products:</p>
           <ul>
             {userData.products && userData.products.length > 0 ? (
@@ -93,6 +114,8 @@ const Account = ({ token }) => {
               <li>No products found</li>
             )}
           </ul>
+=======
+>>>>>>> 008859a (update account component)
         </div>
       )}
       <button className="account-button" onClick={handleLogout}>Logout</button>

@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 /* App.css */
 
+=======
+>>>>>>> 008859a (update account component)
 /* Global Styles */
 body {
   font-family: Arial, sans-serif;
@@ -108,6 +111,7 @@ body {
   perspective: 1000px;
 }
 
+<<<<<<< HEAD
 /* Responsive Styles */
 @media (max-width: 1200px) {
   .product-list {
@@ -128,6 +132,139 @@ body {
 }
 
 
+=======
+/* Product Details Styles */
+.product-details-container {
+  background-color: #dfd9d2;
+  display: block;
+  color: rgb(23, 22, 22);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  max-height: 80vh; /* Set a maximum height for the container */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds the container height */
+  opacity: 0.90;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  perspective: 1000px;
+}
+
+.product-details-container img {
+  max-width: 50%; /* Reduce image size */
+  height: auto;
+}
+
+.product-details-container h2 {
+  border: 1px solid #b07c03;
+  margin-top: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+}
+
+/* Infinite Scrolling for Cart and Checkout */
+.cart-container,
+.checkout-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ebece5;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 80vh; /* Set maximum height for infinite scrolling */
+}
+
+.cart-title,
+.checkout-title {
+  border: 1px solid #d18f0c;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #5a07ea;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+}
+
+.cart-items,
+.checkout-items {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+  overflow-y: auto;
+  max-height: 60vh; /* Set maximum height for the item list */
+}
+
+.cart-item,
+.checkout-item {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.cart-info p,
+.checkout-info p {
+  margin-bottom: 10px;
+}
+
+.cart-checkout-button,
+.checkout-button {
+  padding: 10px 20px;
+  background-color: #7700ff;
+  color: #171616;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cart-checkout-button:hover,
+.checkout-button:hover {
+  background-color: #0056b3;
+}
+
+/* Register Styles */
+.register-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.register-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.register-button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+>>>>>>> 008859a (update account component)
 
 /* Login Styles */
 .login-container {
@@ -178,6 +315,52 @@ body {
   margin-top: 10px;
 }
 
+<<<<<<< HEAD
+=======
+/* Home Styles */
+.home-container {
+  background-color: #d99709;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+  border: 3px solid #090808; /* Add border */
+  border-radius: 8px; /* Add border radius for rounded corners */
+}
+
+.home-container h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.home-container p {
+  font-size: 18px;
+  color: #5f00f8;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .product-list {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .product-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .product-list {
+    grid-template-columns: 1fr; /* 1 column on very small screens */
+  }
+}
+
+>>>>>>> 008859a (update account component)
 /* Account Info Styles */
 .account-container {
   display: center;
@@ -220,6 +403,7 @@ body {
 .account-button:hover {
   background-color: #0056b3;
 }
+<<<<<<< HEAD
 
 /* Register Styles */
 .register-container {
@@ -517,3 +701,5 @@ body {
   
 
 }  
+=======
+>>>>>>> 008859a (update account component)

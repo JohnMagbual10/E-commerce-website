@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 
 const Login = ({ setToken }) => {
+<<<<<<< HEAD
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
+=======
+  const [formData, setFormData] = useState({ username: '', password: '' });
+>>>>>>> 008859a (update account component)
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -16,6 +20,7 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+<<<<<<< HEAD
     try {
       const response = await fetch('api/auth/login', {
         method: 'POST',
@@ -37,6 +42,27 @@ const Login = ({ setToken }) => {
         username: '',
         password: ''
       });
+=======
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      const data = await response.json();
+      const { token, user } = data;
+      setToken(token);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      setError(null);
+      console.log('Login successful');
+>>>>>>> 008859a (update account component)
     } catch (error) {
       setError('Login failed. Please check your credentials.');
       console.error('Login Error:', error);
@@ -68,11 +94,15 @@ const Login = ({ setToken }) => {
           className="login-input"
         />
         <button type="submit" disabled={loading} className="login-button">
+<<<<<<< HEAD
           {loading ? (
             <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           ) : (
             'Login'
           )}
+=======
+          {loading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Login'}
+>>>>>>> 008859a (update account component)
         </button>
         {error && <p className="login-error">{error}</p>}
       </form>
