@@ -152,14 +152,20 @@ async function createTables() {
 async function insertInitialUsers() {
   const users = [
     {
+      username: 'admin1',
+      password: await bcrypt.hash('adminpassword1', 10),
+      email: 'admin1@example.com',
+      first_name: 'Admin',
+      last_name: 'One',
+      is_admin: true,
+    },
+    {
       username: 'user1',
-      password: await bcrypt.hash('password1', 10),
+      password: await bcrypt.hash('userpassword1', 10),
       email: 'user1@example.com',
-      first_name: 'John',
-      last_name: 'Doe',
-      address: '123 Main St',
-      phone_number: '123-456-7890',
-      is_admin: false
+      first_name: 'User',
+      last_name: 'One',
+      is_admin: false,
     },
     {
       username: 'user2',
@@ -169,7 +175,7 @@ async function insertInitialUsers() {
       last_name: 'Doe',
       address: '456 Elm St',
       phone_number: '098-765-4321',
-      is_admin: true
+      is_admin: false
     }
   ];
 

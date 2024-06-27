@@ -1,6 +1,7 @@
 require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const { connectDB, createTables, insertInitialProducts, insertInitialUsers } = require('./db');
+const adminRoutes = require('../routes/admin');
 const app = express();
 
 console.log('Environment Variables:', process.env);
@@ -18,6 +19,8 @@ if (!JWT_SECRET) {
 
 app.use(express.json());
 
+app.use('/api/admin', adminRoutes);
+console.log('Admin routes loaded');
 app.use('/api/auth', require('../routes/auth'));
 console.log('Auth routes loaded');
 app.use('/api/products', require('../routes/products'));
