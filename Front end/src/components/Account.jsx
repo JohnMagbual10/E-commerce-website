@@ -14,7 +14,7 @@ const Account = ({ token }) => {
       }
 
       try {
-        const response = await fetch(`/api/users`, {
+        const response = await fetch(`/api/users/me`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -26,10 +26,7 @@ const Account = ({ token }) => {
         }
 
         const data = await response.json();
-        if (!Array.isArray(data) || data.length === 0) {
-          throw new Error('No user data found');
-        }
-        setUserData(data[0]); // Assuming you expect a single user object based on the provided example
+        setUserData(data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -47,7 +44,7 @@ const Account = ({ token }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` // Ensure token is correctly passed
+          Authorization: `Bearer ${token}`
         }
       });
 
@@ -55,17 +52,11 @@ const Account = ({ token }) => {
         throw new Error('Logout request failed');
       }
 
-      // Clear user data and token from local storage or state
-      setUserData(null); // Clear user data
-      localStorage.removeItem('token'); // Clear token from local storage
-
-      // Optionally redirect to login page or perform any additional cleanup
-      // Example: Redirect to login page using React Router
+      setUserData(null);
+      localStorage.removeItem('token');
       window.location.href = '/login';
-
     } catch (error) {
       console.error('Logout Error:', error.message);
-      // Handle logout error (optional)
     }
   };
 
@@ -83,16 +74,6 @@ const Account = ({ token }) => {
           <p className="account-info">Address: {userData.address}</p>
           <p className="account-info">Phone Number: {userData.phone_number}</p>
           <p className="account-info">Admin: {userData.is_admin ? 'Yes' : 'No'}</p>
-          <p className="account-info">Camping and Hiking Products:</p>
-          <ul>
-            {userData.products && userData.products.length > 0 ? (
-              userData.products.map(product => (
-                <li key={product.id}>{product.name} - {product.category}</li>
-              ))
-            ) : (
-              <li>No products found</li>
-            )}
-          </ul>
         </div>
       )}
       <button className="account-button" onClick={handleLogout}>Logout</button>

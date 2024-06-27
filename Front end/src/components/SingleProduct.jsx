@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
-const SingleBook = () => {
+const SingleProduct = () => {
   const { id } = useParams();
-  const [book, setBook] = useState(null);
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBook = async () => {
+    const fetchProduct = async () => {
       try {
-        const response = await fetch(`/products/:id`, {
+        const response = await fetch(`/api/products/${id}`, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
         if (!response.ok) {
-          throw new Error('Failed to fetch book');
+          throw new Error('Failed to fetch product');
         }
         const data = await response.json();
-        setBook(data.book);
+        setProduct(data);
         setLoading(false);
       } catch (error) {
-        console.error('Book Fetch Error:', error);
-        setError('Failed to fetch book. Please try again.');
+        console.error('Product Fetch Error:', error);
+        setError('Failed to fetch product. Please try again.');
         setLoading(false);
       }
     };
 
-    fetchBook();
+    fetchProduct();
   }, [id]);
 
   if (loading) {
@@ -39,22 +39,22 @@ const SingleBook = () => {
     return <p>Error: {error}</p>;
   }
 
-  if (!book) {
-    return <p>No book found.</p>;
+  if (!product) {
+    return <p>No product found.</p>;
   }
 
   return (
-    <div className="single-book-container">
-      <h2 className="single-book-title">{book.title}</h2>
-      <div className="single-book-info">
-        <p>Author: {book.author}</p>
-        <p>Description: {book.description}</p>
+    <div className="single-product-container">
+      <h2 className="single-product-title">{product.name}</h2>
+      <div className="single-product-info">
+        <p>Description: {product.description}</p>
+        <p>Price: ${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</p>
+        <p>Stock: {product.stock_quantity}</p>
       </div>
-      <img className="single-book-image" src={book.coverimage} alt={book.title} />
-      <p>Available: {book.available ? 'Yes' : 'No'}</p>
-      <Link to="/books" className="single-book-link">Back to Books</Link>
+      <img className="single-product-image" src={product.image_url} alt={product.name} />
+      <Link to="/products" className="single-product-link">Back to Products</Link>
     </div>
   );
 };
 
-export default SingleBook;
+export default SingleProduct;
