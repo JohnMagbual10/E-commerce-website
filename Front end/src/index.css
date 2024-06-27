@@ -238,48 +238,53 @@ body {
   cursor: pointer;
 }
 
-/* Single Book Styles */
-.single-book-container {
-  border: 3px solid #090808; /* Add border */
-  border-radius: 8px; /* Add border radius for rounded corners */
-  background-color: #ccc;
-  max-width: 300px;
+/* Login Styles */
+.login-container {
+  max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  opacity: 0.80;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.single-book-title {
-  font-size: 24px;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(112, 33, 249, 0.5);
+.login-title {
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   transform: rotateY(-10deg) rotateX(10deg);
   perspective: 1000px;
 }
 
-.single-book-info {
-  margin-bottom: 10px;
+.login-form {
+  display: flex;
+  flex-direction: column;
 }
 
-.single-book-description {
-  margin-bottom: 20px;
+.login-input {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.single-book-image {
-  max-width: 50%;
-  height: auto;
-  margin-bottom: 20px;
+.login-button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.single-book-link {
-  display: block;
-  margin-top: 20px;
-  text-decoration: none;
-  color: #007bff;
+.login-button:hover {
+  background-color: #0056b3;
 }
 
-.single-book-link:hover {
-  text-decoration: underline;
+.login-error {
+  color: #dc3545;
+  margin-top: 10px;
 }
 
 /* Home Styles */
@@ -366,154 +371,4 @@ body {
 
 .account-button:hover {
   background-color: #0056b3;
-}
-
-/* Cart Styles */
-.cart-container {
-  background-color: #e98009;
-  display: grid;
-  color: rgb(23, 22, 22);
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  max-height: 80vh; /* Set a maximum height for the container */
-  overflow-y: auto; /* Enable vertical scrolling when content exceeds the container height */
-  opacity: 0.90;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  perspective: 1000px;
-}
-
-.cart-item img {
-  max-width: 50%; /* Reduce image size */
-  height: auto;
-}
-
-.cart-items {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 10px; /* Add gap between items */
-}
-
-.cart-item {
-  border: 2px solid #0a0a0a;
-  padding: 10px;
-  border-spacing: 1cap;
-}
-
-.cart-item h3 {
-  border: 1px solid #b07c03;
-  margin-top: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  transform: rotateY(-10deg) rotateX(10deg);
-  perspective: 1000px;
-}
-
-/* Responsive Styles */
-@media (max-width: 1200px) {
-  .cart-items {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
-  }
-}
-
-@media (max-width: 768px) {
-  .cart-items {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
-  }
-}
-
-@media (max-width: 480px) {
-  .cart-items {
-    grid-template-columns: 1fr; /* 1 column on very small screens */
-  }
-}
-
-.cart-summary {
-  border-top: 2px solid #0a0a0a;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: rgba(0, 0, 0, 0.1);
-  text-shadow: none; /* No text shadow for summary */
-}
-
-.cart-summary-title {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-
-.cart-checkout-button {
-  background-color: #b07c03;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-}
-
-.cart-checkout-button:hover {
-  background-color: #7a5202;
-}
-
-/* Checkout Styles */
-.checkout-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border: 3px solid #090808; /* Add border */
-  border-radius: 8px; /* Add border radius for rounded corners */
-}
-
-.checkout-title {
-  text-align: center;
-  margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  transform: rotateY(-10deg) rotateX(10deg);
-  perspective: 1000px;
-  border: 3px solid #090808; /* Add border */
-  border-radius: 8px; /* Add border radius for rounded corners */
-}
-
-.checkout-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.checkout-input {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.checkout-button {
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.checkout-button:hover {
-  background-color: #0056b3;
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .product-list {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
-  }
-}
-
-@media (max-width: 768px) {
-  .product-list {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on small screens */
-  }
-}
-
-@media (max-width: 480px) {
-  .product-list {
-    grid-template-columns: 1fr; /* 1 column on very small screens */
-  }
 }
