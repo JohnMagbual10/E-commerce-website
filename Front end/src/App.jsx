@@ -9,6 +9,8 @@ import Register from './components/Register';
 import Account from './components/Account';
 import Home from './components/Home';
 import Checkout from './components/Checkout';
+import AdminProducts from './Admin/AdminProducts';
+import AdminUsers from './Admin/AdminUsers';
 import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
 
@@ -37,11 +39,22 @@ function App() {
   const handleLogin = (newToken) => {
     setToken(newToken);
     localStorage.setItem('token', newToken);
+    fetch('/api/users/me', {
+      headers: {
+        Authorization: `Bearer ${newToken}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        localStorage.setItem('user', JSON.stringify(data));
+      })
+      .catch(error => console.error('Error fetching user data:', error));
   };
 
   const handleLogout = () => {
     setToken(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   const addToCart = (product) => {
@@ -81,28 +94,18 @@ function App() {
         Your browser does not support the video tag.
       </video>
       <div className="video-content"></div>
-      <Navigation token={token} onLogout={handleLogout} />
+      <Navigation token={token} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<ProductList products={products} addToCart={addToCart} />} />
         <Route path="/products/:id" element={<SingleProduct token={token} />} />
         <Route path="/login" element={<Login setToken={handleLogin} />} />
         <Route path="/register" element={<Register setToken={handleLogin} />} />
-        <Route path="/account" element={
-          <ProtectedRoute token={token}>
-            <Account token={token} />
-          </ProtectedRoute>
-        } />
-        <Route path="/cart" element={
-          <ProtectedRoute token={token} allowAccess={true}>
-            <Cart token={token} cartItems={cartItems} handleRemove={handleRemove} handleUpdateQuantity={handleUpdateQuantity} />
-          </ProtectedRoute>
-        } />
-        <Route path="/checkout" element={
-          <ProtectedRoute token={token} allowAccess={true}>
-            <Checkout cartItems={cartItems} handleCheckout={handleCheckout} />
-          </ProtectedRoute>
-        } />
+        <Route path="/account" element={<ProtectedRoute token={token}><Account token={token} /></ProtectedRoute>} />
+        <Route path="/cart" element={<Cart cartItems={cartItems} handleRemove={handleRemove} handleUpdateQuantity={handleUpdateQuantity} />} />
+        <Route path="/checkout" element={<Checkout cartItems={cartItems} handleCheckout={handleCheckout} />} />
+        <Route path="/admin/products" element={<ProtectedRoute token={token} isAdmin><AdminProducts /></ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute token={token} isAdmin><AdminUsers /></ProtectedRoute>} />
       </Routes>
     </div>
   );
