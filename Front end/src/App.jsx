@@ -9,6 +9,7 @@ import Register from './components/Register';
 import Account from './components/Account';
 import Home from './components/Home';
 import Checkout from './components/Checkout';
+import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
 
 function App() {
@@ -87,9 +88,21 @@ function App() {
         <Route path="/products/:id" element={<SingleProduct token={token} />} />
         <Route path="/login" element={<Login setToken={handleLogin} />} />
         <Route path="/register" element={<Register setToken={handleLogin} />} />
-        <Route path="/account" element={<Account token={token} />} />
-        <Route path="/cart" element={<Cart cartItems={cartItems} handleRemove={handleRemove} handleUpdateQuantity={handleUpdateQuantity} />} />
-        <Route path="/checkout" element={<Checkout cartItems={cartItems} handleCheckout={handleCheckout} />} />
+        <Route path="/account" element={
+          <ProtectedRoute token={token}>
+            <Account token={token} />
+          </ProtectedRoute>
+        } />
+        <Route path="/cart" element={
+          <ProtectedRoute token={token} allowAccess={true}>
+            <Cart token={token} cartItems={cartItems} handleRemove={handleRemove} handleUpdateQuantity={handleUpdateQuantity} />
+          </ProtectedRoute>
+        } />
+        <Route path="/checkout" element={
+          <ProtectedRoute token={token} allowAccess={true}>
+            <Checkout cartItems={cartItems} handleCheckout={handleCheckout} />
+          </ProtectedRoute>
+        } />
       </Routes>
     </div>
   );

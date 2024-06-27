@@ -24,7 +24,7 @@ const Cart = ({ token, cartItems, handleRemove, handleUpdateQuantity }) => {
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+    return cartItems.reduce((total, item) => total + Number(item.price) * item.quantity, 0).toFixed(2);
   };
 
   return (
@@ -46,7 +46,7 @@ const Cart = ({ token, cartItems, handleRemove, handleUpdateQuantity }) => {
                 min="1"
               />
             </p>
-            <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
+            <p>Total: ${(Number(item.price) * item.quantity).toFixed(2)}</p>
             <button onClick={() => handleRemove(item.id)}>Remove</button>
           </li>
         ))}

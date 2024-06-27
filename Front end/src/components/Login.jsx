@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 
 const Login = ({ setToken }) => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -16,27 +13,25 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
     try {
-      const response = await fetch('api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
       });
+
       if (!response.ok) {
         throw new Error('Login failed');
       }
+
       const data = await response.json();
-      const { token } = data;
+      const { token, user } = data;
       setToken(token);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       setError(null);
       console.log('Login successful');
-      console.log('Token:', token);
-      setFormData({ // Reset form fields after successful login
-        username: '',
-        password: ''
-      });
     } catch (error) {
       setError('Login failed. Please check your credentials.');
       console.error('Login Error:', error);
@@ -68,11 +63,7 @@ const Login = ({ setToken }) => {
           className="login-input"
         />
         <button type="submit" disabled={loading} className="login-button">
-          {loading ? (
-            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          ) : (
-            'Login'
-          )}
+          {loading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Login'}
         </button>
         {error && <p className="login-error">{error}</p>}
       </form>

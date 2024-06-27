@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 
-
+Sure! Here's a comprehensive README for your e-commerce application:
 
 E-Commerce Application
-
 This is a full-stack e-commerce application built with React on the frontend and Node.js/Express with PostgreSQL on the backend. The application allows users to browse products, add them to a cart, and proceed to checkout. There is also functionality for user authentication and account management.
 
 Table of Contents
@@ -74,10 +72,11 @@ Browse Products:
 View all available products and their details.
 
 User Authentication:
+
 Register a new account.
 Log into your existing account.
-
 Cart Management:
+
 Add products to your cart.
 Edit the quantity of products in your cart.
 Remove products from your cart.
@@ -85,18 +84,15 @@ Checkout:
 Proceed to checkout and complete your purchase.
 
 API Endpoints
-
 Authentication
 POST /api/auth/register: Register a new user.
 POST /api/auth/login: Log in an existing user.
-
 Products
 GET /api/products: Get all products.
 GET /api/products/:id: Get details of a specific product.
 POST /api/products: Add a new product (Admin only).
 PUT /api/products/:id: Edit a product (Admin only).
 DELETE /api/products/:id: Delete a product (Admin only).
-
 Cart
 GET /api/cart: Get the current user's cart.
 POST /api/cart/add: Add an item to the cart.
@@ -106,14 +102,3 @@ Checkout
 POST /api/checkout: Complete the purchase of items in the cart.
 Users
 GET /api/users: Get all users (Admin only).
-=======
-# Block 30 - Book Buddy
-
-## Introduction
-
-We are working with a new client who is wanting to design an online library for the public. Another Full Stack Solutions team has already built out the API, but we need your assistance in developing the front end to ensure on-time delivery to the client. When this is complete, please submit the link to the deployed application so I can share it with the client.
-
-Details on the API can be found 🔗 [here](https://fsa-book-buddy-b6e748d1380d.herokuapp.com/docs/)
-
-
->>>>>>> 008859a (update account component)
