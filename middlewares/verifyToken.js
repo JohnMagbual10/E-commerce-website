@@ -3,10 +3,12 @@ require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-module.exports = (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: 'Access token is missing' });
   }
 
   try {
@@ -14,6 +16,8 @@ module.exports = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Invalid Token' });
+    res.status(403).json({ message: 'Invalid or expired token' });
   }
 };
+
+module.exports = verifyToken;

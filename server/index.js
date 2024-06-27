@@ -1,6 +1,6 @@
 require('dotenv').config({ path: '../.env' });
 const express = require('express');
-const { connectDB } = require('./db');
+const { connectDB, createTables, insertInitialProducts, insertInitialUsers } = require('./db');
 const app = express();
 
 console.log('Environment Variables:', process.env);
@@ -29,7 +29,10 @@ console.log('Cart routes loaded');
 
 const PORT = process.env.PORT || 3000;
 
-connectDB().then(() => {
+connectDB().then(async () => {
+  await createTables();
+  await insertInitialUsers();
+  await insertInitialProducts();
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
