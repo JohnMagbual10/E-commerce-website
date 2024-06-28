@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './AdminProducts.css';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -12,9 +11,8 @@ const AdminProducts = () => {
       try {
         const response = await fetch('/api/admin/products', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
         });
         if (!response.ok) {
           throw new Error('Failed to fetch products');
@@ -32,8 +30,13 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div className="admin-product-list-container">
@@ -45,7 +48,7 @@ const AdminProducts = () => {
               <h3>{product.name}</h3>
             </Link>
             <p>Description: {product.description}</p>
-            <p>Price: ${product.price.toFixed(2)}</p>
+            <p>Price: ${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</p>
             <img src={product.image_url} alt={product.name} />
             <p>Stock Quantity: {product.stock_quantity}</p>
             <div className="admin-buttons">

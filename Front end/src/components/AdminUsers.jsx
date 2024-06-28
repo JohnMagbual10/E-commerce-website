@@ -7,20 +7,33 @@ const AdminUsers = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('User is not authenticated.');
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await fetch('/api/admin/users', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         });
+
         if (!response.ok) {
-          throw new Error('Failed to fetch users');
+          if (response.status === 401) {
+            throw new Error('Unauthorized. Please log in again.');
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const data = await response.json();
         setUsers(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching users:', error.message);
         setError('Failed to fetch users. Please try again later.');
         setLoading(false);
       }
@@ -33,12 +46,13 @@ const AdminUsers = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <h2>Admin Users</h2>
-      <ul>
+    <div className="admin-users-container">
+      <h2 className="admin-title">Admin Users</h2>
+      <ul className="admin-users-list">
         {users.map(user => (
-          <li key={user.id}>
-            {user.username} - {user.email} - {user.is_admin ? 'Admin' : 'User'}
+          <li key={user.id} className="admin-users-item">
+            <p>{user.username} - {user.email}</p>
+            <button className="admin-remove-button">Remove</button>
           </li>
         ))}
       </ul>

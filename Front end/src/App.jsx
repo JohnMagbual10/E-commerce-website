@@ -9,8 +9,8 @@ import Register from './components/Register';
 import Account from './components/Account';
 import Home from './components/Home';
 import Checkout from './components/Checkout';
-import AdminProducts from './Admin/AdminProducts';
-import AdminUsers from './Admin/AdminUsers';
+import AdminProducts from './components/AdminProducts';
+import AdminUsers from './components/AdminUsers';
 import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
 

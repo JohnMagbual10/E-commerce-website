@@ -453,3 +453,113 @@ checkout-button:hover,
 .single-product-link:hover {
   text-decoration: underline;
 }
+
+/* Admin Users Styles */
+.admin-users-container {
+  display: center;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ebece5;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-title {
+  border: 1px solid #d18f0c;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #5a07ea;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+}
+
+.admin-users-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+  overflow-y: auto;
+  max-height: 60vh; /* Set maximum height for the item list */
+}
+
+.admin-users-item {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.admin-remove-button {
+  padding: 10px 20px;
+  background-color: #7700ff;
+  color: #171616;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-remove-button:hover {
+  background-color: #0056b3;
+}
+
+/* Admin Products Styles */
+.admin-product-list-container {
+  background-color: #ebece5;
+  display: block;
+  color: rgb(23, 22, 22);
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-height: 80vh; /* Set a maximum height for the container */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds the container height */
+}
+
+.admin-product img {
+  max-width: 50%; /* Reduce image size */
+  height: auto;
+}
+
+.admin-product-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 10px; /* Add gap between items */
+}
+
+.admin-product {
+  border: 2px solid #0a0a0a;
+  padding: 10px;
+  border-spacing: 1cap;
+}
+
+.admin-product h3 {
+  border: 1px solid #b07c03;
+  margin-top: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  transform: rotateY(-10deg) rotateX(10deg);
+  perspective: 1000px;
+}
+
+.admin-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.admin-edit-button,
+.admin-remove-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-edit-button:hover,
+.admin-remove-button:hover {
+  background-color: #0056b3;
+}
+
