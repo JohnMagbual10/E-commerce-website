@@ -19,7 +19,6 @@ const SingleProduct = () => {
           throw new Error('Failed to fetch product');
         }
         const data = await response.json();
-        console.log('Fetched product:', data); // Log the product data
         setProduct(data);
         setLoading(false);
       } catch (error) {
@@ -49,7 +48,7 @@ const SingleProduct = () => {
       <h2 className="single-product-title">{product.name}</h2>
       <div className="single-product-info">
         <p>Description: {product.description}</p>
-        <p>Price: ${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</p>
+        <p>Price: ${typeof product.price === 'string' ? parseFloat(product.price).toFixed(2) : product.price}</p>
         <p>Stock: {product.stock_quantity}</p>
       </div>
       <img className="single-product-image" src={product.image_url} alt={product.name} />
