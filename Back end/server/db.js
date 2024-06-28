@@ -44,7 +44,7 @@ async function createTables() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-    CREATE TABLE IF NOT EXISTS products (
+    CREATE TABLE products (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       name VARCHAR(50) NOT NULL,
       description TEXT,
@@ -55,6 +55,7 @@ async function createTables() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+    
 
     CREATE TABLE IF NOT EXISTS orders (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
