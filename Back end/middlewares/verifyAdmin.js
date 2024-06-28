@@ -1,6 +1,9 @@
-module.exports = (req, res, next) => {
-  if (!req.user.is_admin) {
-    return res.status(403).json({ message: 'Access forbidden: Admins only' });
+const verifyAdmin = (req, res, next) => {
+  if (req.user && req.user.is_admin) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Admin access required' });
   }
-  next();
 };
+
+module.exports = verifyAdmin;

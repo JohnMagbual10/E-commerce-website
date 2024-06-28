@@ -19,6 +19,7 @@ const SingleProduct = () => {
           throw new Error('Failed to fetch product');
         }
         const data = await response.json();
+        console.log('Fetched product:', data); // Log the product data
         setProduct(data);
         setLoading(false);
       } catch (error) {

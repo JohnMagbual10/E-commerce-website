@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import './AdminProducts.css';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -10,8 +12,9 @@ const AdminProducts = () => {
       try {
         const response = await fetch('/api/admin/products', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
         });
         if (!response.ok) {
           throw new Error('Failed to fetch products');
@@ -34,15 +37,17 @@ const AdminProducts = () => {
 
   return (
     <div className="admin-product-list-container">
-      <h2 className="admin-title">Admin Products</h2>
+      <h2>Admin Products</h2>
       <ul className="admin-product-list">
         {products.map(product => (
           <li key={product.id} className="admin-product">
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
+            <Link to={`/admin/products/${product.id}`}>
+              <h3>{product.name}</h3>
+            </Link>
+            <p>Description: {product.description}</p>
             <p>Price: ${product.price.toFixed(2)}</p>
-            <p>Stock: {product.stock_quantity}</p>
             <img src={product.image_url} alt={product.name} />
+            <p>Stock Quantity: {product.stock_quantity}</p>
             <div className="admin-buttons">
               <button className="admin-edit-button">Edit</button>
               <button className="admin-remove-button">Remove</button>
