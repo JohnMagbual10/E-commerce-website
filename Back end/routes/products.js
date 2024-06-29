@@ -1,7 +1,8 @@
+// routes/products.js
 const express = require('express');
 const router = express.Router();
 const { client } = require('../server/db');
-const { validate: isUUID } = require('uuid'); // Import validate method from uuid
+const { validateUUIDMiddleware } = require('../middlewares/uuidValidation');
 
 // Get all products
 router.get('/', async (req, res) => {
@@ -15,12 +16,8 @@ router.get('/', async (req, res) => {
 });
 
 // Get a single product by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateUUIDMiddleware, async (req, res) => {
   const productId = req.params.id;
-
-  if (!isUUID(productId)) {
-    return res.status(400).json({ error: 'Invalid product ID' });
-  }
 
   try {
     const result = await client.query('SELECT * FROM products WHERE id = $1', [productId]);
@@ -33,5 +30,20 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve product' });
   }
 });
+
+router.post('/products', async (req, res) => {
+  const { name, description, price, stock_quantity, category_id, image_url } = req.body;
+  try {
+    const result = await client.query(
+      'INSERT INTO products (name, description, price, stock_quantity, category_id, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, description, price, stock_quantity, category_id, image_url]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error adding product:', err.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 module.exports = router;
