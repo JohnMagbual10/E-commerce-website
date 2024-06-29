@@ -563,3 +563,43 @@ checkout-button:hover,
   background-color: #0056b3;
 }
 
+/* Add Product Form Styles */
+.add-product-form {
+  background-color: #ebece5;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.add-product-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-product-form input,
+.add-product-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-product-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  transition: background-color 0.3s ease;
+}
+
+.add-product-form button:hover {
+  background-color: #0056b3;
+}
+
+
