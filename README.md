@@ -52,12 +52,12 @@ Secure user data to prevent unauthorized manipulation.
       npm install
       ```
 3. Set Up the PostgreSQL Database
-   ```sh
+```sh
   Create a .env file in the root directory with the following content:
   DATABASE_URL=your_database_url
   JWT_SECRET=your_jwt_secret
   PORT=your_port
-  ```
+```
 ## Run the Application
 
 Start the Backend Server
