@@ -37,19 +37,27 @@ Secure user data to prevent unauthorized manipulation.
 
 ## Requirements
 
-Node.js (v18.19.0 or later)
-PostgreSQL
-A web browser
-Installation
+- Node.js (v18.19.0 or later)
+- PostgreSQL
+- A web browser
 
 ## Installation
-npm install
-Set Up the PostgreSQL Database
-Create a .env file in the root directory with the following content:
-DATABASE_URL=your_database_url
-JWT_SECRET=your_jwt_secret
-PORT=your_port
-
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/e_commerce_project.git
+   cd e_commerce_project
+   ```
+2. Install Dependencies
+      ```sh
+      npm install
+      ```
+3. Set Up the PostgreSQL Database
+   ```sh
+  Create a .env file in the root directory with the following content:
+  DATABASE_URL=your_database_url
+  JWT_SECRET=your_jwt_secret
+  PORT=your_port
+  ```
 ## Run the Application
 
 Start the Backend Server
