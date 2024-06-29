@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
-const SingleAdminProduct = ({ token }) => {
+const SingleAdminProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ const SingleAdminProduct = ({ token }) => {
         const response = await fetch(`/api/admin/products/${id}`, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
         });
         if (!response.ok) {
@@ -30,7 +30,7 @@ const SingleAdminProduct = ({ token }) => {
     };
 
     fetchProduct();
-  }, [id, token]);
+  }, [id]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -49,7 +49,7 @@ const SingleAdminProduct = ({ token }) => {
       <h2 className="single-product-title">{product.name}</h2>
       <div className="single-product-info">
         <p>Description: {product.description}</p>
-        <p>Price: ${typeof product.price === 'string' ? parseFloat(product.price).toFixed(2) : product.price.toFixed(2)}</p>
+        <p>Price: ${typeof product.price === 'string' ? parseFloat(product.price).toFixed(2) : product.price}</p>
         <p>Stock: {product.stock_quantity}</p>
       </div>
       <img className="single-product-image" src={product.image_url} alt={product.name} />
