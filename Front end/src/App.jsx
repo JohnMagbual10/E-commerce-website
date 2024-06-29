@@ -91,7 +91,7 @@ function App() {
   return (
     <div>
       <video className="video-background" autoPlay loop muted>
-        <source src="https://v.ftcdn.net/07/72/64/15/240_F_772641572_PfThw26Al2RX8CGRpZv656aDjiyyZnVN_ST.mp4" type="video/mp4" />
+        <source src="https://cdn.pixabay.com/video/2022/03/23/111763-692666925_tiny.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <div className="video-content"></div>

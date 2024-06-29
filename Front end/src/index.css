@@ -32,11 +32,7 @@ body {
 /* Navigation Styles */
 .navigation {
   border-radius: 6px;
-  background-image: linear-gradient(
-    rgb(48, 48, 48) 13%,
-    rgb(30, 30, 30) 40%,
-    #2a0484 86%
-  );
+  background-image: linear-gradient(rgb(48, 48, 48) 13%, rgb(30, 30, 30) 40%, #2a0484 86%);
   color: rgba(255, 255, 255, 0.6);
   text-shadow: 0 -2px 0 black;
   cursor: pointer;
@@ -91,7 +87,7 @@ body {
 .product-list,
 .admin-product-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px; /* Add gap between items */
 }
 
@@ -119,7 +115,7 @@ body {
 
 .admin-edit-button,
 .admin-remove-button {
-  background-color: #007bff;
+  background-color: #5f00f8;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -209,17 +205,17 @@ body {
 }
 
 .cart-info p,
-checkout-info p,
+.checkout-info p,
 .admin-info p {
   margin-bottom: 10px;
 }
 
 .cart-checkout-button,
-checkout-button,
+.checkout-button,
 .admin-button {
   padding: 10px 20px;
-  background-color: #7700ff;
-  color: #171616;
+  background-color: #5f00f8;
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -227,7 +223,7 @@ checkout-button,
 }
 
 .cart-checkout-button:hover,
-checkout-button:hover,
+.checkout-button:hover,
 .admin-button:hover {
   background-color: #0056b3;
 }
@@ -267,7 +263,7 @@ checkout-button:hover,
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: #5f00f8;
   color: #fff;
   cursor: pointer;
 }
@@ -304,7 +300,7 @@ checkout-button:hover,
 
 .login-button {
   padding: 10px;
-  background-color: #007bff;
+  background-color: #5f00f8;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -343,6 +339,82 @@ checkout-button:hover,
 .home-container p {
   font-size: 18px;
   color: #5f00f8;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  text-align: center;
+  color: #fff;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 100px 20px;
+}
+
+.hero-content h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.hero-content p {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+/* Products Section */
+.products {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.products-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.product-item {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.product-item img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.price {
+  color: #28a745;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Footer Section */
+.footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
 }
 
 /* Responsive Design */
@@ -398,8 +470,8 @@ checkout-button:hover,
 
 .account-button {
   padding: 10px 20px;
-  background-color: #7700ff;
-  color: #171616;
+  background-color: #5f00f8;
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -447,7 +519,7 @@ checkout-button:hover,
   display: block;
   margin-top: 20px;
   text-decoration: none;
-  color: #007bff;
+  color: #5f00f8;
 }
 
 .single-product-link:hover {
@@ -460,13 +532,13 @@ checkout-button:hover,
   max-width: 960px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #ebece5;
+  background-color: #f8b400;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .admin-title {
-  border: 1px solid #d18f0c;
+  border: 1px solid #ebecf4;
   text-align: center;
   margin-bottom: 20px;
   color: #5a07ea;
@@ -484,7 +556,7 @@ checkout-button:hover,
 }
 
 .admin-users-item {
-  border: 1px solid #ccc;
+  border: 1px solid #e0ded5;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
@@ -492,8 +564,8 @@ checkout-button:hover,
 
 .admin-remove-button {
   padding: 10px 20px;
-  background-color: #7700ff;
-  color: #171616;
+  background-color: #5f00f8;
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -506,7 +578,7 @@ checkout-button:hover,
 
 /* Admin Products Styles */
 .admin-product-list-container {
-  background-color: #ebece5;
+  background-color: #f8b400;
   display: block;
   color: rgb(23, 22, 22);
   text-align: center;
@@ -524,12 +596,12 @@ checkout-button:hover,
 
 .admin-product-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px; /* Add gap between items */
 }
 
 .admin-product {
-  border: 2px solid #0a0a0a;
+  border: 2px solid #f1a808;
   padding: 10px;
   border-spacing: 1cap;
 }
@@ -549,7 +621,7 @@ checkout-button:hover,
 
 .admin-edit-button,
 .admin-remove-button {
-  background-color: #007bff;
+  background-color: #5f00f8;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -565,8 +637,8 @@ checkout-button:hover,
 
 /* Add Product Form Styles */
 .add-product-form {
-  background-color: #ebece5;
-  padding: 20px;
+  background-color: #2c0cc8;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
@@ -574,12 +646,12 @@ checkout-button:hover,
 
 .add-product-form h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .add-product-form input,
 .add-product-form textarea {
-  width: 100%;
+  width: 50%;
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ccc;
@@ -588,7 +660,7 @@ checkout-button:hover,
 
 .add-product-form button {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #4600f8;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -601,5 +673,3 @@ checkout-button:hover,
 .add-product-form button:hover {
   background-color: #0056b3;
 }
-
-

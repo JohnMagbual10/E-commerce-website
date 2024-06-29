@@ -8,12 +8,13 @@ const SingleAdminProduct = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log(`Fetching product with id: ${id}`); // Log the ID
+
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`/api/admin/products/${id}`, {
+        const response = await fetch(`/api/products/${id}`, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
         });
         if (!response.ok) {
@@ -53,7 +54,7 @@ const SingleAdminProduct = () => {
         <p>Stock: {product.stock_quantity}</p>
       </div>
       <img className="single-product-image" src={product.image_url} alt={product.name} />
-      <Link to="/admin/products" className="single-product-link">Back to Admin Products</Link>
+      <Link to="/admin/products" className="single-product-link">Back to Products</Link>
     </div>
   );
 };
