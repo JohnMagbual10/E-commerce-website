@@ -4,12 +4,12 @@ This is a full-stack e-commerce application built with React on the frontend and
 
 ## Table of Contents
 
--[Features](#features)
--[Requirements](#requirements)
--[Installation](#installation)
--[Usage](#usage)
--[API Endpoints](#api-endpoints)
--[Folder Structure](#folder-structure)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Folder Structure](#folder-structure)
 
 ## Features
 
