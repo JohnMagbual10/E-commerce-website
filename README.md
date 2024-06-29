@@ -1,9 +1,5 @@
 E-Commerce Application
-
-This is a full-stack e-commerce application built with React on the frontend and Node.js/Express with PostgreSQL on the backend. 
-The application allows Administrators are able able to add/remove products and 
-see a list of users and allows users to browse products, add them to a cart, and proceed to checkout. 
-There is also functionality for user authentication and account management. Administrators are able able to add/remove products
+This is a full-stack e-commerce application built with React on the frontend and Node.js/Express with PostgreSQL on the backend. The application allows users to browse products, add them to a cart, and proceed to checkout. Administrators can add/remove products and see a list of users.
 
 Table of Contents
 Features
@@ -37,51 +33,50 @@ Node.js (v18.19.0 or later)
 PostgreSQL
 A web browser
 Installation
-Clone the repository:
+Clone the Repository
 sh
 Copy code
 git clone https://github.com/your-username/e-commerce-app.git
 cd e-commerce-app
-Install dependencies:
+Install Dependencies
 sh
 Copy code
 npm install
-Set up the PostgreSQL database:
+Set Up the PostgreSQL Database
 Create a .env file in the root directory with the following content:
-env
+
+makefile
 Copy code
 DATABASE_URL=your_database_url
 JWT_SECRET=your_jwt_secret
 PORT=your_port
-Run the database setup script:
+Run the Database Setup Script
 sh
 Copy code
 node server/db.js
-Start the backend server:
+Start the Backend Server
 sh
 Copy code
 node server/index.js
-Start the frontend development server:
+Start the Frontend Development Server
 sh
 Copy code
 npm start
 Usage
-Navigate to the application:
+Navigate to the Application
 Open your web browser and go to http://localhost:3000.
 
-Browse Products:
+Browse Products
 View all available products and their details.
 
-User Authentication:
-
+User Authentication
 Register a new account.
 Log into your existing account.
-Cart Management:
-
+Cart Management
 Add products to your cart.
 Edit the quantity of products in your cart.
 Remove products from your cart.
-Checkout:
+Checkout
 Proceed to checkout and complete your purchase.
 
 API Endpoints
@@ -103,3 +98,4 @@ Checkout
 POST /api/checkout: Complete the purchase of items in the cart.
 Users
 GET /api/users: Get all users (Admin only).
+
