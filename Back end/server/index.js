@@ -1,7 +1,9 @@
+// server/index.js
 require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const { connectDB, createTables, insertInitialProducts, insertInitialUsers } = require('./db');
 const adminRoutes = require('../routes/admin');
+const productRoutes = require('../routes/products');
 const app = express();
 
 console.log('Environment Variables:', process.env);
@@ -23,7 +25,7 @@ app.use('/api/admin', adminRoutes);
 console.log('Admin routes loaded');
 app.use('/api/auth', require('../routes/auth'));
 console.log('Auth routes loaded');
-app.use('/api/products', require('../routes/products'));
+app.use('/api/products', productRoutes); // Ensure this line is correct
 console.log('Product routes loaded');
 app.use('/api/users', require('../routes/users'));
 console.log('User routes loaded');
