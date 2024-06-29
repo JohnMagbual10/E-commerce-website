@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { client } = require('../server/db');
+const { validate: isUUID } = require('uuid'); // Import validate method from uuid
 
 // Get all products
 router.get('/', async (req, res) => {
@@ -16,6 +17,10 @@ router.get('/', async (req, res) => {
 // Get a single product by ID
 router.get('/:id', async (req, res) => {
   const productId = req.params.id;
+
+  if (!isUUID(productId)) {
+    return res.status(400).json({ error: 'Invalid product ID' });
+  }
 
   try {
     const result = await client.query('SELECT * FROM products WHERE id = $1', [productId]);
