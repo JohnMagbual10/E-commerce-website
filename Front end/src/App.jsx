@@ -10,6 +10,7 @@ import Account from './components/Account';
 import Home from './components/Home';
 import Checkout from './components/Checkout';
 import AdminProducts from './components/AdminProducts';
+import SingleAdminProduct from './components/SingleAdminProduct';
 import AdminUsers from './components/AdminUsers';
 import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
@@ -105,6 +106,7 @@ function App() {
         <Route path="/cart" element={<Cart cartItems={cartItems} handleRemove={handleRemove} handleUpdateQuantity={handleUpdateQuantity} />} />
         <Route path="/checkout" element={<Checkout cartItems={cartItems} handleCheckout={handleCheckout} />} />
         <Route path="/admin/products" element={<ProtectedRoute token={token} isAdmin><AdminProducts /></ProtectedRoute>} />
+        <Route path="/admin/products/:id" element={<ProtectedRoute token={token} isAdmin><SingleAdminProduct token={token} /></ProtectedRoute>} /> 
         <Route path="/admin/users" element={<ProtectedRoute token={token} isAdmin><AdminUsers /></ProtectedRoute>} />
       </Routes>
     </div>
