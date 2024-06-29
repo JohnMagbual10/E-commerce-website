@@ -1,8 +1,9 @@
-
-Sure! Here's a comprehensive README for your e-commerce application:
-
 E-Commerce Application
-This is a full-stack e-commerce application built with React on the frontend and Node.js/Express with PostgreSQL on the backend. The application allows users to browse products, add them to a cart, and proceed to checkout. There is also functionality for user authentication and account management.
+
+This is a full-stack e-commerce application built with React on the frontend and Node.js/Express with PostgreSQL on the backend. 
+The application allows Administrators are able able to add/remove products and 
+see a list of users and allows users to browse products, add them to a cart, and proceed to checkout. 
+There is also functionality for user authentication and account management. Administrators are able able to add/remove products
 
 Table of Contents
 Features
