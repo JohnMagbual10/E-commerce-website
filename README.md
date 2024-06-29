@@ -51,9 +51,8 @@ Secure user data to prevent unauthorized manipulation.
       ```sh
       npm install
       ```
-3. Set Up the PostgreSQL Database
+3. Create a .env file in the root directory with the following content:
 ```sh
-  Create a .env file in the root directory with the following content:
   DATABASE_URL=your_database_url
   JWT_SECRET=your_jwt_secret
   PORT=your_port
@@ -69,7 +68,7 @@ npm run dev
 
 ## Usage
 
-Navigate to the Application
+## Navigate to the Application
 
 Open your web browser and go to http://localhost:3000.
 
@@ -77,7 +76,7 @@ Browse Products
 
 View all available products and their details.
 
-User Authentication
+## User Authentication
 
 Register a new account.
 Log into your existing account.
@@ -90,27 +89,42 @@ Proceed to checkout and complete your purchase.
 
 ## API Endpoints
 
-Authentication
+## Authentication
 POST /api/auth/register: Register a new user.
 POST /api/auth/login: Log in an existing user.
 
-Products
+## Products
 GET /api/products: Get all products.
 GET /api/products/:id: Get details of a specific product.
 POST /api/products: Add a new product (Admin only).
 PUT /api/products/:id: Edit a product (Admin only).
 DELETE /api/products/:id: Delete a product (Admin only).
 
-Cart
+## Cart
 GET /api/cart: Get the current user's cart.
 POST /api/cart/add: Add an item to the cart.
 PUT /api/cart/update: Update the quantity of an item in the cart.
 DELETE /api/cart/remove: Remove an item from the cart.
 
-Checkout
+## Checkout
 POST /api/checkout: Complete the purchase of items in the cart.
 Users
 GET /api/users: Get all users (Admin only).
 
-database schema
+## database schema
+
+The database schema consists of the following tables:
+
+- `user`
+- `admin_user`
+- `product_categories`
+- `product_inventories`
+- `products`
+- `orders`
+- `orderItems`
+- `cartItems`
+
+### Visual Schema link
+
+https://dbdiagram.io/d/66805fdd9939893dae9c64b8
 
