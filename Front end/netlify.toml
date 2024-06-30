@@ -1,0 +1,7 @@
+[build]
+  base = "Front end"
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  VITE_API_URL = "https://adventure-world-store.herokuapp.com"
