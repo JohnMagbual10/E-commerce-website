@@ -6,11 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: { 
     proxy:{
-      "/api": {
-        target: 'https://adventure-world-store.herokuapp.com',
-        changeOrigin: true,
-        secure: false
-      }
+      "/api":`http://localhost:${3000}`
     }
   }
 })
