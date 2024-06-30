@@ -1,10 +1,10 @@
 {
-  "name": "unit4-library-starter",
+  "name": "e-commerce-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "vite", 
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
