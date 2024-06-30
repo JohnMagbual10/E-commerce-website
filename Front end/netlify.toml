@@ -1,9 +1,9 @@
 [build]
-  base = "Front end"
-  publish = "dist"
+  base = "frontend"
+  publish = "frontend/dist"
   command = "npm run build"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+  port = 8888
