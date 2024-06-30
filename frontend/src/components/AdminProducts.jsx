@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://dancing-bublanina-89ab7a.netlify.app/.netlify/functions';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ const AdminProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/admin/products', {
+        const response = await fetch(`${API_URL}/products`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -53,7 +54,7 @@ const AdminProducts = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/admin/products/${editingProduct.id}`, {
+      const response = await fetch(`${API_URL}/products/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +78,7 @@ const AdminProducts = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/admin/products', {
+      const response = await fetch(`${API_URL}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +100,7 @@ const AdminProducts = () => {
 
   const handleRemoveProduct = async (productId) => {
     try {
-      const response = await fetch(`/api/admin/products/${productId}`, {
+      const response = await fetch(`${API_URL}/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
