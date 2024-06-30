@@ -1,0 +1,9 @@
+[build]
+  base = "frontend"
+  publish = "frontend/dist"
+  command = "npm run build"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+  port = 8888
