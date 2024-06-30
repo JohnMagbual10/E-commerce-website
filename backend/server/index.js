@@ -4,6 +4,7 @@ const express = require('express');
 const { connectDB, createTables, insertInitialProducts, insertInitialUsers } = require('./db');
 const adminRoutes = require('../routes/admin');
 const productRoutes = require('../routes/products');
+const cors = require('cors');
 const app = express();
 
 console.log('Environment Variables:', process.env);
@@ -21,6 +22,11 @@ if (!JWT_SECRET) {
 }
 
 app.use(express.json());
+app.use(cors({
+  origin: 'https://localhost:3000.com', // Adjust this to your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use('/api/admin', adminRoutes);
 console.log('Admin routes loaded');
