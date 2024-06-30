@@ -14,7 +14,7 @@ const Account = ({ token }) => {
       }
 
       try {
-        const response = await fetch(`/api/users/me`, {
+        const response = await fetch(`${API_URL}/users/me`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
