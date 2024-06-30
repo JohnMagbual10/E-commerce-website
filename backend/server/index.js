@@ -23,7 +23,7 @@ if (!JWT_SECRET) {
 
 app.use(express.json());
 app.use(cors({
-  origin: 'https://localhost:3000.com', // Adjust this to your frontend domain
+  origin: 'https://dancing-bublanina-89ab7a.netlify.app/', // Adjust this to your frontend domain
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
