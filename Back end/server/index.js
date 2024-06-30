@@ -11,7 +11,7 @@ console.log('Environment Variables:', process.env);
 const JWT_SECRET = process.env.JWT_SECRET;
 const DATABASE_URL = process.env.DATABASE_URL;
 
-console.log(`Server is running on port ${PORT}`);
+
 console.log('JWT_SECRET:', JWT_SECRET);
 console.log('DATABASE_URL:', DATABASE_URL);
 
