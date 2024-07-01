@@ -1,0 +1,12 @@
+{
+    "name": "my-ecommerce-app",
+    "scripts": {
+      "postdeploy": "cd backend && npm install && npm run build"
+    },
+    "buildpacks": [
+      {
+        "url": "heroku/nodejs"
+      }
+    ]
+  }
+  
