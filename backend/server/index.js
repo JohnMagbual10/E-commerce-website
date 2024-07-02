@@ -46,7 +46,7 @@ console.log('User routes loaded');
 app.use('/api/cart', cartRoutes);
 console.log('Cart routes loaded');
 
-// Serve static files from the React frontend app
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 app.get('*', (req, res) => {
