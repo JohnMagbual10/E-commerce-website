@@ -4,7 +4,7 @@
   "main": "backend/server/index.js",
   "scripts": {
     "start": "node backend/server/index.js",
-    "build": "echo 'Build script executed'",
+    "build": "npm install --prefix backend && echo 'Build script executed'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
