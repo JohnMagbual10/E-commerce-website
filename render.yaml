@@ -1,0 +1,26 @@
+# render.yaml
+services:
+  - type: web
+    name: e-commerce-backend
+    env: node
+    plan: free
+    buildCommand: "npm install && npm run build"
+    startCommand: "npm start"
+    envVars:
+      - key: DATABASE_URL
+        value: YOUR_DATABASE_URL
+      - key: JWT_SECRET
+        value: YOUR_JWT_SECRET
+    env: 
+      - key: NODE_ENV
+        value: production
+
+  - type: web
+    name: e-commerce-frontend
+    env: static
+    plan: free
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: "frontend/dist"
+    env: 
+      - key: NODE_ENV
+        value: production
