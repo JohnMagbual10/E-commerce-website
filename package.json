@@ -4,13 +4,9 @@
   "main": "backend/server/index.js",
   "scripts": {
     "start": "node backend/server/index.js",
-    "build": "cd frontend && npm install && npm run build && echo 'Build script executed'",
+    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "John Magbual",
-  "license": "ISC",
-  "description": "An e-commerce application",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
