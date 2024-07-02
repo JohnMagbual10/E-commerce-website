@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+
 const Account = ({ token }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,7 +15,7 @@ const Account = ({ token }) => {
       }
 
       try {
-        const response = await fetch(`${API_URL}/users/me`, {
+        const response = await fetch(`/api/users/me`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -40,7 +41,7 @@ const Account = ({ token }) => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
+      const response = await fetch(`/api/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
