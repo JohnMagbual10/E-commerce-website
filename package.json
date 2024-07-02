@@ -1,15 +1,11 @@
 {
-  "name": "my-ecommerce-app",
+  "name": "e-commerce-app",
   "version": "1.0.0",
-  "main": "node backend/server/index.js",
   "scripts": {
     "start": "node backend/server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "npm run build"
   },
-  "keywords": [],
-  "author": "John Magbual",
-  "license": "ISC",
-  "description": "An e-commerce application",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
