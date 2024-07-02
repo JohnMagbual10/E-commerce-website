@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { connectDB, createTables, insertInitialProducts, insertInitialUsers } = require('./db');
 const adminRoutes = require('../routes/admin');
 const productRoutes = require('../routes/products');
@@ -44,6 +45,13 @@ console.log('User routes loaded');
 
 app.use('/api/cart', cartRoutes);
 console.log('Cart routes loaded');
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist', 'index.html'));
+});
 
 const PORT = process.env.PORT || 3000;
 
