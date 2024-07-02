@@ -1,15 +1,16 @@
 services:
   - type: web
-    name: e-commerce-backend
+    name: my-ecommerce-frontend
+    env: static
+    staticPublishPath: frontend/dist
+
+  - type: web
+    name: my-ecommerce-backend
     env: node
-    plan: free
-    buildCommand: "npm run build"
-    startCommand: "npm start"
+    buildCommand: cd backend && npm install
+    startCommand: node backend/server/index.js
     envVars:
-      - key: DATABASE_URL
-        value: YOUR_DATABASE_URL
       - key: JWT_SECRET
-        value: YOUR_JWT_SECRET
-    env: 
-      - key: NODE_ENV
-        value: production
+        value: your_jwt_secret_here
+      - key: DATABASE_URL
+        value: your_database_url_here
