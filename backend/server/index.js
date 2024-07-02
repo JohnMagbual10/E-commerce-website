@@ -10,6 +10,8 @@ const cartRoutes = require('../routes/cart');
 
 const app = express();
 
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+
 console.log('Environment Variables:', process.env);
 
 const JWT_SECRET = process.env.JWT_SECRET;
