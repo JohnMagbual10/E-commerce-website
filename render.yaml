@@ -1,14 +1,9 @@
 services:
   - type: web
-    name: my-ecommerce-frontend
-    env: static
-    staticPublishPath: frontend/dist
-
-  - type: web
-    name: my-ecommerce-backend
+    name: e-commerce-website
     env: node
-    buildCommand: cd backend && npm install
-    startCommand: node backend/server/index.js
+    buildCommand: npm run build
+    startCommand: npm start
     envVars:
       - key: JWT_SECRET
         value: your_jwt_secret_here

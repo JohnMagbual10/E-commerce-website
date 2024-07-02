@@ -1,10 +1,10 @@
 {
-  "name": "my-ecommerce-app",
+  "name": "e-commerce-website",
   "version": "1.0.0",
   "main": "backend/server/index.js",
   "scripts": {
     "start": "node backend/server/index.js",
-    "build": "npm install --prefix backend && echo 'Build script executed'",
+    "build": "cd frontend && npm install && npm run build && echo 'Build script executed'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +16,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.12.0"
+    "pg": "^8.12.0",
+    "cors": "^2.8.5",
+    "uuid": "^8.3.2"
   }
 }
