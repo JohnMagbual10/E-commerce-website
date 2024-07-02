@@ -1,29 +1,22 @@
+
 {
-  "name": "e-commerce-frontend",
-  "version": "0.0.0",
-  "private": true,
+  "name": "my-ecommerce-app",
+  "version": "1.0.0",
+  "main": "backend/server/index.js",
   "scripts": {
-    "start": "vite", 
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "start": "node backend/server/index.js",
+    "build": "npm install --prefix backend && npm install dotenv --prefix backend && echo 'Build script executed'",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "John Magbual",
+  "license": "ISC",
+  "description": "An e-commerce application",
   "dependencies": {
-    "@emotion/styled": "^11.11.5",
-    "@mui/icons-material": "^5.15.15",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.23.1"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.3",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "vite": "^4.4.5"
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.12.0"
   }
 }
