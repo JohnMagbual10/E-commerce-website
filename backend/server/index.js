@@ -1,7 +1,8 @@
-const path = require('path');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { connectDB, createTables, insertInitialProducts, insertInitialUsers } = require('./db');
+const path = require('path');
+const { connectDB, createTables, insertInitialProducts, insertInitialUsers } = require('../db');
 const adminRoutes = require('../routes/admin');
 const productRoutes = require('../routes/products');
 const authRoutes = require('../routes/auth');
@@ -9,8 +10,6 @@ const userRoutes = require('../routes/users');
 const cartRoutes = require('../routes/cart');
 
 const app = express();
-
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 console.log('Environment Variables:', process.env);
 
@@ -27,10 +26,13 @@ if (!JWT_SECRET) {
 
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000', // Ensure this matches your frontend URL in development
+  origin: 'http://localhost:3000', // Ensure this matches your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Serve static files from the frontend
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 app.use('/api/admin', adminRoutes);
 console.log('Admin routes loaded');
@@ -47,12 +49,8 @@ console.log('User routes loaded');
 app.use('/api/cart', cartRoutes);
 console.log('Cart routes loaded');
 
-// Serve static files from the frontend build
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
-
-// Fallback to serving index.html for any other route
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../frontend/dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
