@@ -11,6 +11,20 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const searchProducts = async (req, res) => {
+  const { q } = req.query;
+  try {
+    const result = await client.query(
+      'SELECT * FROM products WHERE name ILIKE $1 OR description ILIKE $2',
+      [`%${q}%`, `%${q}%`]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 const getProductById = async (req, res) => {
   const productId = req.params.id;
 
@@ -26,4 +40,4 @@ const getProductById = async (req, res) => {
   }
 };
 
-module.exports = { getAllProducts, getProductById };
+module.exports = { getAllProducts, getProductById, searchProducts };

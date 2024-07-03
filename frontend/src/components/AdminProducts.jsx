@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import SearchBar from './SearchBar'; // Ensure this import statement is added
 
 
 const AdminProducts = () => {
@@ -9,6 +10,7 @@ const AdminProducts = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [formState, setFormState] = useState({ name: '', description: '', price: '', stock_quantity: '', image_url: '' });
   const [newProduct, setNewProduct] = useState({ name: '', description: '', price: '', stock_quantity: '', image_url: '' });
+  const [searchTerm, setSearchTerm] = useState(''); // Add state for search term
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -123,10 +125,21 @@ const AdminProducts = () => {
     return <p>Error: {error}</p>;
   }
 
+  const handleSearch = async (term) => {
+    setSearchTerm(term); // Set the search term state
+    try {
+      const response = await fetch(`/api/products/search?q=${term}`);
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
   return (
     <div className="admin-product-list-container">
       <h2 className="admin-title">Admin Products</h2>
-
+      <SearchBar onSearch={handleSearch} />
       <form className="add-product-form" onSubmit={handleAddProduct}>
         <h2>Add New Product</h2>
         <input

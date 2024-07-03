@@ -3,6 +3,25 @@ const express = require('express');
 const router = express.Router();
 const { client } = require('../server/db');
 const { validateUUIDMiddleware } = require('../middlewares/uuidValidation');
+const { getProducts, searchProducts } = require('../controllers/productController');
+
+// Search for products
+router.get('/search',searchProducts, async (req, res) => {
+  const searchTerm = req.query.q;
+
+  try {
+    const query = `
+      SELECT * FROM products
+      WHERE name ILIKE $1 OR description ILIKE $1
+    `;
+    const values = [`%${searchTerm}%`];
+    const { rows } = await client.query(query, values);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error searching for products:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // Get all products
 router.get('/', async (req, res) => {

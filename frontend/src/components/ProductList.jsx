@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import SearchBar from './SearchBar'; // Import the SearchBar component
 
 const ProductList = ({ addToCart }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(''); // Add state for search term
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,9 +36,21 @@ const ProductList = ({ addToCart }) => {
     return <p>Error: {error}</p>;
   }
 
+  const handleSearch = async (term) => {
+    setSearchTerm(term); // Set the search term state
+    try {
+      const response = await fetch(`/api/products/search?q=${term}`);
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
   return (
     <div className="product-list-container">
       <h2>Product List</h2>
+      <SearchBar onSearch={handleSearch} />
       <ul className="product-list">
         {products.map(product => (
           <li key={product.id} className="product">
