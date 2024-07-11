@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+
 const Cart = ({ token, cartItems, handleRemove, handleUpdateQuantity }) => {
   const handleCheckout = async () => {
     try {

@@ -707,3 +707,49 @@ body {
 .search-bar-container button:hover {
   background-color: #0056b3;
 }
+
+.order-confirmation-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.checkout-container h2,
+.order-confirmation-container h2 {
+  margin-bottom: 20px;
+}
+
+.checkout-items,
+.order-confirmation-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.checkout-item,
+.order-confirmation-container li {
+  margin-bottom: 10px;
+}
+
+.checkout-form input.checkout-input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.checkout-button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.checkout-error {
+  color: red;
+  margin-top: 10px;
+}
+
